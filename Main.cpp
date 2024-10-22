@@ -3,124 +3,126 @@ using namespace std;
 #include "Authenticate.h"
 #include "CEO.h"
 
-
 int main()
 {
-    // First ask how do you want to login
-    // Exit
     while(1)
     {
-        cout<<"Welcome to Google!\n";
-        cout<<"Login as\n";
-        cout<<"1)CEO\n2)HR\n3)Employee\n";
+        cout << "Welcome to Google!\n";
+        cout << "Login as\n";
+        cout << "1)CEO\n2)HR\n3)Employee\n";
 
         string status;
-        cin>>status;
-        cin.ignore();
+        getline(cin,status);
+        
         // Convert the string to uppercase for standard comparison
-        transform(status.begin(),status.end(),status.begin(),::toupper);
+        transform(status.begin(), status.end(), status.begin(), ::toupper);
 
         // Object of authenticate class to access the methods
-        Authenticator* auth=new Authenticator();
+        Authenticator* auth = new Authenticator();
 
-        if(status=="CEO")
+        if(status == "CEO")
         {
-            // Authenticate the CEO
-            cout<<"Enter your username: ";
+            cout << "Enter your username: ";
             string username;
-            cin>>username;
+            getline(cin, username);
 
             string password;
-            cout<<"Enter your password: ";
-            cin>>password;
+            cout << "Enter your password: ";
+            getline(cin, password);
 
-            cin.ignore();
-
-
-            if(auth->verifyLogin(status,username,password))
+            if(auth->verifyLogin(status, username, password))
             {
-                cout<<"You are successfully logged in!\n";
-                cout<<"Welcome CEO\n";
+                cout << "You are successfully logged in!\n";
+                cout << "Welcome CEO\n";
                 
-                CEO* ceo=new CEO();
+                // Create CEO object once
+                CEO* ceo = new CEO();
+
                 while(1)
                 {
-                    // Now give access to add HR, add Projects etc.
-                    cout<<"What do you want to do?\n1)Add HR employees\n2)Remove HR employees\n3)Add Projects\n4)Exit\n";
-                    string task;
-                    getline(cin,task);
+                    cout << "What do you want to do?\n";
+                    cout << "1) Add HR\n";
+                    cout << "2) Remove HR\n";
+                    cout << "3) Add Project\n";
+                    cout << "4) Exit\n";
                     
+                    string task;
+                    getline(cin, task);
+                    transform(task.begin(), task.end(), task.begin(), ::toupper);
 
-                    transform(task.begin(),task.end(),task.begin(),::toupper);
-                    if(task=="ADD HR")
+                    if(task == "ADD HR" || task == "1")
                     {
-                        cout<<"Enter new employee ID: ";
+                        cout << "Enter new employee ID: ";
                         string id;
-                        cin>>id;
-                        cout<<"Enter new employee's password: ";
+                        getline(cin, id);
+                        
+                        cout << "Enter new employee's password: ";
                         string password;
-                        cin>>password;
-                        ceo->addHR(id,password);
+                        getline(cin, password);
+                        
+                        ceo->addHR(id, password);
                     }
-                    else if(task=="REMOVE HR")
+                    else if(task == "REMOVE HR" || task == "2")
                     {
+                        cout << "Enter ID of employee to be fired: ";
                         string id;
-                        cout<<"Enter ID of employee to be fired: ";
-                        cin>>id;
+                        getline(cin, id);
                         ceo->removeHR(id);
                     }
-                    else if(task=="ADD PROJECT")
+                    else if(task == "ADD PROJECT" || task == "3")
                     {
+                        cout << "Enter new project's name: ";
                         string projectname;
+                        getline(cin, projectname);
+                        
+                        cout << "Enter new project's id: ";
                         string projectid;
-                        cout<<"Enter new project's name: ";
-                        cin>>projectname;
-                        cout<<"Enter new project's id: ";
-                        cin>>projectid;
+                        getline(cin, projectid);
 
-                        ceo->addProject(projectname,projectid);
+                        ceo->addProject(projectname, projectid);
                     }
-                    else if(task=="EXIT")
+                    else if(task == "EXIT" || task == "4")
                     {
                         ceo->loggedOut();
-                        cout<<"Logged out successfully\n";
+                        cout << "Logged out successfully\n";
+                        delete ceo; // Free memory
                         break;
                     }
                     else
                     {
-                        cout<<"Invalid command\n";
+                        cout << "Invalid command\n";
                     }
-
                 }
-                delete ceo;
             }
             else
             {
-                cout<<"\n";
-                cout<<"Wrong username or wrong password\n";
+                cout << "\nWrong username or wrong password\n";
             }
+            delete auth; // Free memory
         }
-        else if(status=="HR")
+        else if(status == "HR")
         {
-            cout<<"Welcome HR\n";
+            cout << "Welcome HR\n";
+            delete auth;
         }
-        else if(status=="EMPLOYEE")
+        else if(status == "EMPLOYEE")
         {
-            cout<<"Welcome employee\n";
+            cout << "Welcome employee\n";
+            delete auth;
         }
-        else if(status=="EXIT")
+        else if(status == "EXIT")
         {
-            cout<<"Logged out successfully\n";
+            cout << "Logged out successfully\n";
+            delete auth;
             break;
         }
         else
         {
-            cout<<"Invalid command\n";
+            cout << "Invalid command\n";
+            delete auth;
         }
-        cout<<"\n";
+        cout << "\n";
     }
-
-
 
     return 0;
 }

@@ -73,7 +73,7 @@ void CEO::addHR(string id, string password)
     while(!uniqueHRID(id))
     {
         cout<<"Please enter a unique ID!\n";
-        cin>>id;
+        getline(cin,id);
     }
     Authenticate hr={id,password,"HR","HIRED"};
     credentials.push_back(hr);
@@ -109,7 +109,8 @@ void CEO::addProject(string projectName,string projectID)
     while(!uniqueProjID(projectID))
     {
         cout<<"Enter a valid project id\n";
-        cin>>projectID;
+        // cin>>projectID;
+        getline(cin,projectID);
     }
     Project add={projectName,projectID};
     projects.push_back(add);
