@@ -11,6 +11,9 @@ int main()
         cout << "Login as\n";
         cout << "1)CEO\n2)HR\n3)Employee\n";
 
+        // WARNING!!!!!
+        // DO NOT USE CIN
+        // USE ONLY GETLINE FOR INPUT BUFFER ISSUES
         string status;
         getline(cin,status);
         

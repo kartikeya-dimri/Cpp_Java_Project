@@ -40,7 +40,6 @@ CEO::CEO()
         {
             parts.push_back(part);
         }
-        // Store them in the struct
         // name:id
         Project proj={parts[0],parts[1]};
         projects.push_back(proj);

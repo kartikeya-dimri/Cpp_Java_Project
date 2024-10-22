@@ -8,4 +8,5 @@ Authenticate.o: Authenticate.h Authenticate.cpp
 	g++ -c Authenticate.cpp
 
 CEO.o: CEO.h CEO.cpp
-	g++ -c CEO.cpp
+	g++ -c CEO.cpp 
+	

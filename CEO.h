@@ -11,7 +11,7 @@ struct Project
 
 class CEO
 {
-    // Need the credentials as he is adding them
+    // Need the credentials 
 private:
     vector<Authenticate> credentials;
     vector<Project> projects;

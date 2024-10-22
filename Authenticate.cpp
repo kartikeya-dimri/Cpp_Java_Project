@@ -27,7 +27,6 @@ Authenticator::Authenticator()
             // Get all the five parts
             parts.push_back(part);
         }
-        // Store them in the struct
         // id:password:status:hired_status
         Authenticate auth={parts[0],parts[1],parts[2],parts[3]};
         // Credentials loaded

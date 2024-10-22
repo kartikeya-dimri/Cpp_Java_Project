@@ -2,7 +2,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-// The four attributes in credentials.txt
+
 struct Authenticate
 {
     string empId;
