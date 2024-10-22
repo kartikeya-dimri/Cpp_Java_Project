@@ -1,6 +1,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 #include "Authenticate.h"
+#include "CEO.h"
 
 
 int main()
@@ -25,7 +26,7 @@ int main()
         {
             // Authenticate the CEO
             cout<<"Enter your username: ";
-            int username;
+            string username;
             cin>>username;
 
             string password;
@@ -37,13 +38,61 @@ int main()
             {
                 cout<<"You are successfully logged in!\n";
                 cout<<"Welcome CEO\n";
+                // Now give access to add HR, add Projects etc.
+                cout<<"What do you want to do?\n1)Add HR employees\n2)Remove HR employees\n3)Add Projects\n";
+                string task;
+                cin>>task;
+                CEO* ceo=new CEO();
+
+                transform(task.begin(),task.end(),task.begin(),::toupper);
+
+                while(1)
+                {
+                    if(task=="ADD HR")
+                    {
+                        cout<<"Enter new employee ID: ";
+                        string id;
+                        cin>>id;
+                        cout<<"Enter new employee's password: ";
+                        string password;
+                        cin>>password;
+                        ceo->addHR(id,password);
+                    }
+                    else if(task=="REMOVE HR")
+                    {
+                        string id;
+                        cout<<"Enter ID of employee to be fired: ";
+                        cin>>id;
+                        ceo->removeHR(id);
+                    }
+                    else if(task=="ADD PROJECT")
+                    {
+                        string projectname;
+                        string projectid;
+                        cout<<"Enter new project's name: ";
+                        cin>>projectname;
+                        cout<<"Enter new project's id: ";
+                        cin>>projectid;
+
+                        ceo->addProject(projectname,projectid);
+                    }
+                    else if(task=="EXIT")
+                    {
+                        ceo->loggedOut();
+                        cout<<"Logged out successfully\n";
+                        break;
+                    }
+                    else
+                    {
+                        cout<<"Invalid command\n";
+                    }
+                }
             }
             else
             {
                 cout<<"\n";
                 cout<<"Wrong username or wrong password\n";
             }
-
         }
         else if(status=="HR")
         {

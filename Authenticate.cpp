@@ -29,15 +29,17 @@ Authenticator::Authenticator()
         }
         // Store them in the struct
         // id:password:status:hired_status
-        Authenticate auth={stoi(parts[0]),parts[1],parts[2],parts[3]};
+        Authenticate auth={parts[0],parts[1],parts[2],parts[3]};
         // Credentials loaded
         credentials.push_back(auth);
     }
+    // Close the file
+    infile.close();
     
 }
 
 // Verify the login
-bool Authenticator::verifyLogin(string status,int username,string password)
+bool Authenticator::verifyLogin(string status,string username,string password)
 {
     for(auto i:credentials)
     {
@@ -47,4 +49,17 @@ bool Authenticator::verifyLogin(string status,int username,string password)
         }
     }
     return false;
+}
+
+// Check if the entered ID is unique
+bool Authenticator::isUniqueId(string id)
+{
+    for(auto i:credentials)
+    {
+        if(i.empId==id)
+        {
+            return false;
+        }
+    }
+    return true;
 }
