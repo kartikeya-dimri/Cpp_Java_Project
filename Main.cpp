@@ -1,7 +1,6 @@
 #include<bits/stdc++.h>
 using namespace std;
-
-
+#include "Authenticate.h"
 
 
 int main()
@@ -19,10 +18,32 @@ int main()
         // Convert the string to uppercase for standard comparison
         transform(status.begin(),status.end(),status.begin(),::toupper);
 
+        // Object of authenticate class to access the methods
+        Authenticator* auth=new Authenticator();
+
         if(status=="CEO")
         {
             // Authenticate the CEO
-            cout<<"Welcome CEO\n";
+            cout<<"Enter your username: ";
+            int username;
+            cin>>username;
+
+            string password;
+            cout<<"Enter your password: ";
+            cin>>password;
+
+
+            if(auth->verifyLogin(status,username,password))
+            {
+                cout<<"You are successfully logged in!\n";
+                cout<<"Welcome CEO\n";
+            }
+            else
+            {
+                cout<<"\n";
+                cout<<"Wrong username or wrong password\n";
+            }
+
         }
         else if(status=="HR")
         {
