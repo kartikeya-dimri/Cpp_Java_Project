@@ -16,6 +16,7 @@ int main()
 
         string status;
         cin>>status;
+        cin.ignore();
         // Convert the string to uppercase for standard comparison
         transform(status.begin(),status.end(),status.begin(),::toupper);
 
@@ -33,21 +34,24 @@ int main()
             cout<<"Enter your password: ";
             cin>>password;
 
+            cin.ignore();
+
 
             if(auth->verifyLogin(status,username,password))
             {
                 cout<<"You are successfully logged in!\n";
                 cout<<"Welcome CEO\n";
-                // Now give access to add HR, add Projects etc.
-                cout<<"What do you want to do?\n1)Add HR employees\n2)Remove HR employees\n3)Add Projects\n";
-                string task;
-                cin>>task;
+                
                 CEO* ceo=new CEO();
-
-                transform(task.begin(),task.end(),task.begin(),::toupper);
-
                 while(1)
                 {
+                    // Now give access to add HR, add Projects etc.
+                    cout<<"What do you want to do?\n1)Add HR employees\n2)Remove HR employees\n3)Add Projects\n4)Exit\n";
+                    string task;
+                    getline(cin,task);
+                    
+
+                    transform(task.begin(),task.end(),task.begin(),::toupper);
                     if(task=="ADD HR")
                     {
                         cout<<"Enter new employee ID: ";
@@ -86,7 +90,9 @@ int main()
                     {
                         cout<<"Invalid command\n";
                     }
+
                 }
+                delete ceo;
             }
             else
             {

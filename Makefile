@@ -1,4 +1,4 @@
-output: Main.o Authenticate.o
+output: Main.o Authenticate.o CEO.o
 	g++ Main.o Authenticate.o CEO.o -o output
 
 Main.o: Main.cpp

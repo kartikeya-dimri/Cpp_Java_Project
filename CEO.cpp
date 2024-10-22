@@ -31,7 +31,7 @@ CEO::CEO()
     // Now read the projects
     ifstream infile1("Projects.txt");
     // Read each line in the file
-    while(getline(infile,line))
+    while(getline(infile1,line))
     {
         stringstream iss(line);
         string part;
@@ -66,7 +66,7 @@ bool CEO::uniqueHRID(string id)
 void CEO::addHR(string id, string password)
 {
     // Write the credentials to the file
-    string HRcredential=id+":"+password+":"+"HR"+"HIRED";
+    string HRcredential=id+":"+password+":"+"HR"+":"+"HIRED";
     // First check if the id entered is unique
 
     // Wait till a unique id is entered
@@ -75,20 +75,21 @@ void CEO::addHR(string id, string password)
         cout<<"Please enter a unique ID!\n";
         cin>>id;
     }
+    Authenticate hr={id,password,"HR","HIRED"};
+    credentials.push_back(hr);
 }
 
 void CEO::removeHR(string id)
 {
-    // Find the HR first
-    for(int j=0;j<credentials.size();j++)
+    for(int j = 0; j < credentials.size(); j++)
     {
-        Authenticate i=credentials[j];
-        if(i.empId==id)
+        if(credentials[j].empId == id)
         {
-            // Just change the hired status to fired as past data needs to be stored
-            i.hired_status="FIRED";
+            credentials[j].hired_status = "FIRED";
+            return;  // Exit after finding and modifying
         }
     }
+    cout << "HR with ID " << id << " not found!" << endl;
 }
 
 bool CEO::uniqueProjID(string id)
