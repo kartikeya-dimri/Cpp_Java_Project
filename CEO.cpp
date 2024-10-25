@@ -11,12 +11,11 @@ CEO::CEO()
     // Read each line in the file
     while(getline(infile,line))
     {
-        stringstream iss(line);
+        istringstream iss(line);
         string part;
         vector<string> parts;
         while (getline(iss,part,':'))
         {
-            // Get all the five parts
             parts.push_back(part);
         }
         // Store them in the struct
@@ -33,7 +32,7 @@ CEO::CEO()
     // Read each line in the file
     while(getline(infile1,line))
     {
-        stringstream iss(line);
+        istringstream iss(line);
         string part;
         vector<string> parts;
         while (getline(iss,part,':'))
