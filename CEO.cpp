@@ -1,4 +1,3 @@
-#pragma once
 #include "CEO.h"
 #include<bits/stdc++.h>
 using namespace std;
@@ -45,6 +44,69 @@ CEO::CEO()
     }
     // Close the file
     infile1.close();
+}
+
+void CEO::ceoRunner(){
+    cout << "You are successfully logged in!\n";
+    cout << "Welcome CEO\n";
+
+    while(1)
+    {
+        cout << "What do you want to do?\n";
+        cout << "1) Add HR\n";
+        cout << "2) Remove HR\n";
+        cout << "3) Add Project\n";
+        cout << "4) Exit\n";
+        
+        string task;
+        getline(cin, task);
+        transform(task.begin(), task.end(), task.begin(), ::toupper);
+
+        if(task == "ADD HR" || task == "1")
+        {
+            cout << "Enter new employee ID: ";
+            string id;
+            getline(cin, id);
+            
+            cout << "Enter new employee's password: ";
+            string password;
+            getline(cin, password);
+            
+            this->addHR(id, password);
+        }
+        else if(task == "REMOVE HR" || task == "2")
+        {
+            cout << "Enter ID of employee to be fired: ";
+            string id;
+            getline(cin, id);
+            if(id=="1"){
+                cout<<"CEO can't be fired."<<endl;
+            }
+            else{
+                this->removeHR(id);
+            }
+        }
+        else if(task == "ADD PROJECT" || task == "3")
+        {
+            cout << "Enter new project's name: ";
+            string projectname;
+            getline(cin, projectname);
+            
+            cout << "Enter new project's id: ";
+            string projectid;
+            getline(cin, projectid);
+
+            this->addProject(projectname, projectid);
+        }
+        else if(task == "EXIT" || task == "4")
+        {
+            return;
+        }
+        else
+        {
+            cout << "Invalid command\n";
+        }
+    }
 }
 
 
@@ -122,7 +184,7 @@ void CEO::loggedOut()
     for(int i=0;i<credentials.size();i++)
     {
         Authenticate j=credentials[i];
-        string write=j.empId+":"+j.password+":"+j.status+":"+j.hired_status;
+        string write=j.empId+":"+j.password+":"+j.status+":"+j.hired_status+":";
         outfile<<write<<"\n";
     }
     outfile.close();

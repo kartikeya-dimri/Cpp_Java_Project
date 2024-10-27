@@ -18,6 +18,9 @@ private:
 
 public:
     CEO();
+
+    void ceoRunner();
+
     void addHR(string id, string password);
     void removeHR(string id);
     void addProject(string projectName, string projectID);

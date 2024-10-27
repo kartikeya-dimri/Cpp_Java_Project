@@ -1,4 +1,3 @@
-#pragma once
 #include "Authenticate.h"
 #include<bits/stdc++.h>
 using namespace std;
@@ -42,7 +41,7 @@ bool Authenticator::verifyLogin(string status,string username,string password)
 {
     for(auto i:credentials)
     {
-        if(i.status==status and i.empId==username and i.password==password)
+        if(i.status==status and i.empId==username and i.password==password && i.hired_status=="HIRED")
         {
             return true;
         }

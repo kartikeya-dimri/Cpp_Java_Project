@@ -35,67 +35,13 @@ int main()
 
             if(auth->verifyLogin(status, username, password))
             {
-                cout << "You are successfully logged in!\n";
-                cout << "Welcome CEO\n";
-                
+                    
                 // Create CEO object once
                 CEO* ceo = new CEO();
-
-                while(1)
-                {
-                    cout << "What do you want to do?\n";
-                    cout << "1) Add HR\n";
-                    cout << "2) Remove HR\n";
-                    cout << "3) Add Project\n";
-                    cout << "4) Exit\n";
-                    
-                    string task;
-                    getline(cin, task);
-                    transform(task.begin(), task.end(), task.begin(), ::toupper);
-
-                    if(task == "ADD HR" || task == "1")
-                    {
-                        cout << "Enter new employee ID: ";
-                        string id;
-                        getline(cin, id);
-                        
-                        cout << "Enter new employee's password: ";
-                        string password;
-                        getline(cin, password);
-                        
-                        ceo->addHR(id, password);
-                    }
-                    else if(task == "REMOVE HR" || task == "2")
-                    {
-                        cout << "Enter ID of employee to be fired: ";
-                        string id;
-                        getline(cin, id);
-                        ceo->removeHR(id);
-                    }
-                    else if(task == "ADD PROJECT" || task == "3")
-                    {
-                        cout << "Enter new project's name: ";
-                        string projectname;
-                        getline(cin, projectname);
-                        
-                        cout << "Enter new project's id: ";
-                        string projectid;
-                        getline(cin, projectid);
-
-                        ceo->addProject(projectname, projectid);
-                    }
-                    else if(task == "EXIT" || task == "4")
-                    {
-                        ceo->loggedOut();
-                        cout << "Logged out successfully\n";
-                        delete ceo; // Free memory
-                        break;
-                    }
-                    else
-                    {
-                        cout << "Invalid command\n";
-                    }
-                }
+                ceo->ceoRunner();
+                ceo->loggedOut();
+                cout << "Logged out successfully\n";
+                delete ceo; // Free memory
             }
             else
             {
