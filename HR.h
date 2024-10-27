@@ -1,7 +1,8 @@
-#pragma once
-#include <bits/stdc++.h>
+// #pragma once
 #include "Authenticate.h"
 using namespace std;
+
+
 
 class HRDepartment
 {

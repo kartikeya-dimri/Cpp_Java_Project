@@ -1,7 +1,6 @@
 #include "CEO.h"
-#include<bits/stdc++.h>
 using namespace std;
-#include "DataLoader.h"
+
 
 CEO::CEO()
 {
