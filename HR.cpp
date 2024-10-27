@@ -7,7 +7,7 @@ using namespace std;
 HRDepartment::HRDepartment()
 {
     // Bring the data from the files
-    dataLoader* dl=new dataLoader();
+    DataLoader* dl=new DataLoader();
     // Credentials
     credentials=dl->loadCredentials();
     // Employees

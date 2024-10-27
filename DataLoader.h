@@ -4,7 +4,7 @@ using namespace std;
 
 // This class has all the methods for loading the data from the files
 
-class dataLoader
+class DataLoader
 {
     public:
         vector<Authenticate> loadCredentials();

@@ -4,7 +4,7 @@ using namespace std;
 
 CEO::CEO()
 {
-    dataLoader* dl=new dataLoader();
+    DataLoader* dl=new DataLoader();
     // Credentials
     credentials=dl->loadCredentials();
     // Projects
