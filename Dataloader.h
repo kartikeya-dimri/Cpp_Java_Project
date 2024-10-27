@@ -1,7 +1,6 @@
-#pragma once
-#include<bits/stdc++.h>
+// #pragma once
+#include "UtilityStructs.h"
 using namespace std;
-#include "Authenticate.h"
 
 // This class has all the methods for loading the data from the files
 

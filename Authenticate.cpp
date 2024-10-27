@@ -1,7 +1,5 @@
 #include "Authenticate.h"
-#include<bits/stdc++.h>
 using namespace std;
-#include "DataLoader.h"
 
 Authenticator::Authenticator()
 {
