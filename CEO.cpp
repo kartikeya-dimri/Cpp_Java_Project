@@ -142,17 +142,9 @@ void CEO::addProject(string projectName,string projectID)
 }
 
 void CEO::loggedOut()
-{// {   BAD CODE BY GREATman
+{
     // Now write back the contents of the vectors to the file
-    ofstream outfile("Credentials.txt");
-
-    for(int i=0;i<credentials.size();i++)
-    {
-        Authenticate j=credentials[i];
-        string write=j.empId+":"+j.password+":"+j.status+":"+j.hired_status+":";
-        outfile<<write<<"\n";
-    }
-    outfile.close();
+    
 
 
     ofstream outfile1("Projects.txt");
