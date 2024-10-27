@@ -3,13 +3,6 @@
 #include "Authenticate.h"
 using namespace std;
 
-
-
-
-
-
-
-
 class HRDepartment
 {
 private:
