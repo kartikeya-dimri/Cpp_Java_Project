@@ -278,7 +278,7 @@ void HRDepartment::hrRunner()
         }
         else if (choice == "3" or choice=="assign projects")
         {
-            assignProjects();
+            // assignProjects();
         }
         else if (choice == "4" or choice=="project completed")
         {

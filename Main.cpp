@@ -50,7 +50,7 @@ int main()
                 // Create HR object once
                 HRDepartment* hr = new HRDepartment();
                 hr->hrRunner();
-                hr->loggedOut();
+                // hr->loggedOut();
                 cout << "Logged out successfully\n";
                 delete hr; // Free memory
             }

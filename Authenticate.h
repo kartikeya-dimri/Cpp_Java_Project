@@ -1,4 +1,5 @@
 #include "DataLoader.h"
+#pragma once
 using namespace std;
 
 class Authenticator
