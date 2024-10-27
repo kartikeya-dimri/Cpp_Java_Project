@@ -7,7 +7,10 @@ vector<Authenticate> DataLoader::loadCredentials()
     // Credentials
     ifstream infile("Credentials.txt");
     string line;
-    if(!infile) cout<<"cant open file"<<endl;
+    if(!infile) 
+    {
+        cerr<<"cant open file"<<endl;
+    }
 
     // Read each line in the file
     while (getline(infile, line))
@@ -43,6 +46,11 @@ vector<Employee> DataLoader::loadEmployees()
     ifstream file;
     file.open("Employees.txt");
     string line;
+
+    if(!file) 
+    {
+        cerr<<"cant open file"<<endl;
+    }
 
 
     while (getline(file, line))
@@ -109,6 +117,11 @@ vector<Project> DataLoader::loadProjects()
 
     // Projects
     file.open("Projects.txt");
+
+    if(!file) 
+    {
+        cerr<<"cant open file"<<endl;
+    }
     while (getline(file, line))
     {
         Project project;
