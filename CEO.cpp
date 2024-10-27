@@ -1,72 +1,15 @@
 #include "CEO.h"
 #include<bits/stdc++.h>
 using namespace std;
+#include "DataLoader.h"
 
 CEO::CEO()
 {
-    ifstream infile("Credentials.txt");
-    string line;
-
-    // Read each line in the file
-    while(getline(infile,line))
-    {
-        istringstream iss(line);
-        string part;
-        vector<string> parts;
-        while (getline(iss,part,':'))
-        {
-            parts.push_back(part);
-        }
-        // Store them in the struct
-        // id:password:status:hired_status
-        Authenticate auth={parts[0],parts[1],parts[2],parts[3]};
-        // Credentials loaded
-        credentials.push_back(auth);
-    }
-    // Close the file
-    infile.close();
-
+    dataLoader* dl=new dataLoader();
+    // Credentials
+    credentials=dl->loadCredentials();
     // Projects
-    ifstream file;
-    file.open("Projects.txt");
-    while (getline(file, line))
-    {
-        Project project=Project();
-        size_t pos = 0;
-
-        // Extract name
-        pos = line.find(":");
-        project.name = line.substr(0, pos);
-        line.erase(0, pos + 1);
-
-        // Extract id
-        pos = line.find(":");
-        project.id = line.substr(0, pos);
-        line.erase(0, pos + 1);
-
-        // Extract assigned (convert to bool)
-        pos = line.find(":");
-        project.assigned = (line.substr(0, pos) == "1");
-        line.erase(0, pos + 1);
-
-        // Extract completed (convert to bool)
-        pos = line.find(":");
-        project.completed = (line.substr(0, pos) == "1");
-        line.erase(0, pos + 1);
-
-        // Extract employeesAssigned (split by commas)
-        istringstream employeeStream(line);
-        string employeeId;
-        while (getline(employeeStream, employeeId, ','))
-        {
-            project.employeesAssigned.push_back(employeeId);
-        }
-
-        projects.push_back(project);
-    }
-
-    file.close();
-
+    projects=dl->loadProjects();
 }
 
 void CEO::ceoRunner(){

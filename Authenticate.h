@@ -2,6 +2,8 @@
 #include<bits/stdc++.h>
 using namespace std;
 
+
+// The structs for all the different methods
 struct Project
 {
     string name;
@@ -26,6 +28,18 @@ struct Authenticate
     string hired_status;
 };
 
+
+struct Employee
+{
+    string name;
+    string age;
+    string id;
+    // Faster comparison of available employees
+    int noOfProjects;
+    vector<string> assignedProjects;
+    vector<string> skills;
+    string hired_status;
+};
 
 class Authenticator
 {

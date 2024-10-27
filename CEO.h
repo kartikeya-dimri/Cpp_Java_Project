@@ -3,11 +3,6 @@
 using namespace std;
 #include "Authenticate.h"
 
-// struct Project
-// {
-//     string projectname;
-//     string projectID;
-// };
 
 class CEO
 {

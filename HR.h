@@ -5,25 +5,8 @@ using namespace std;
 
 
 
-// struct Authenticate
-// {
-//     string empId;
-//     string password;
-//     string status;
-//     string hired_status;
-// };
 
-struct Employee
-{
-    string name;
-    string age;
-    string id;
-    // Faster comparison of available employees
-    int noOfProjects;
-    vector<string> assignedProjects;
-    vector<string> skills;
-    string hired_status;
-};
+
 
 
 
