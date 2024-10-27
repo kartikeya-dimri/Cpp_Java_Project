@@ -1,7 +1,7 @@
 // #include<bits/stdc++.h>-- this is already included in Authenticate.h and other files
 // #include "Authenticate.h"//
 #include "CEO.h"
-#include "HR.h"
+#include "HR.h"//
 using namespace std;
 
 int main()

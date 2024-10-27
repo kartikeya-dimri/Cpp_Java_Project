@@ -1,4 +1,4 @@
-#include "DataLoader.h"
+#include "DataLoader.h"//
 
 vector<Authenticate> DataLoader::loadCredentials()
 {
@@ -6,12 +6,18 @@ vector<Authenticate> DataLoader::loadCredentials()
     vector<Authenticate> credentials;
     // Credentials
     ifstream infile("Credentials.txt");
-    string line;
-    if(!infile) cout<<"cant open file"<<endl;
+    // if(!infile.is_open()){
+    //    cerr << "Error: Could not open file 'Credentials.txt'" << endl;
+    //     std::cout << "Current path: " << std::filesystem::current_path() << std::endl;
+    //     return credentials;
+    // }
 
+    string line;
+    // cout<<"bye_bro"<<endl;
     // Read each line in the file
     while (getline(infile, line))
     {
+        // cout<<"hi"<<endl;
         istringstream iss(line);
         string part;
         vector<string> parts;
@@ -27,10 +33,10 @@ vector<Authenticate> DataLoader::loadCredentials()
     }
     // Close the file
     infile.close();
-    for(auto i:credentials){
-        cout<<i.empId<<" "<<i.password<<" "<<i.status<<" "<<i.hired_status<<endl;
-    }
-    cout<<credentials.size()<<endl;
+    // for(auto i:credentials){
+    //     cout<<i.empId<<" "<<i.password<<" "<<i.status<<" "<<i.hired_status<<endl;
+    // }
+    // cout<<credentials.size()<<endl;
 
     return credentials;
 }
