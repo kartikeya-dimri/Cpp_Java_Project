@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-// #pragma once
-=======
-#pragma once//
->>>>>>> ecac801ada864101560b42c4fa683d65151b1887
 #include "DataLoader.h"
 using namespace std;
 
@@ -13,8 +8,7 @@ private:
 
 public:
     Authenticator();
-    bool verifyLogin(string status, string username, string password);
+    // Ask username and password here to shorten main
+    bool verifyLogin(string status);
     bool isUniqueId(string id);
-
-    // friend class CEO;
 };
