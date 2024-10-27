@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 // #pragma once
+=======
+#pragma once//
+>>>>>>> ecac801ada864101560b42c4fa683d65151b1887
 #include "DataLoader.h"
 using namespace std;
 

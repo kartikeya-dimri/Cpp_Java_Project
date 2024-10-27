@@ -3,7 +3,8 @@ using namespace std;
 
 Authenticator::Authenticator()
 {
-    dataLoader* dl=new dataLoader();
+
+    DataLoader* dl=new DataLoader();
     // Credentials
     credentials=dl->loadCredentials();  
 }

@@ -1,11 +1,13 @@
-#include "Dataloader.h"
+#include "DataLoader.h"
 
-vector<Authenticate> dataLoader::loadCredentials()
+vector<Authenticate> DataLoader::loadCredentials()
 {
+
     vector<Authenticate> credentials;
     // Credentials
     ifstream infile("Credentials.txt");
     string line;
+    if(!infile) cout<<"cant open file"<<endl;
 
     // Read each line in the file
     while (getline(infile, line))
@@ -25,12 +27,16 @@ vector<Authenticate> dataLoader::loadCredentials()
     }
     // Close the file
     infile.close();
+    for(auto i:credentials){
+        cout<<i.empId<<" "<<i.password<<" "<<i.status<<" "<<i.hired_status<<endl;
+    }
+    cout<<credentials.size()<<endl;
 
     return credentials;
 }
 
 
-vector<Employee> dataLoader::loadEmployees()
+vector<Employee> DataLoader::loadEmployees()
 {
     // Employees
     vector<Employee> employees;
@@ -95,7 +101,7 @@ vector<Employee> dataLoader::loadEmployees()
 }
 
 
-vector<Project> dataLoader::loadProjects()
+vector<Project> DataLoader::loadProjects()
 {
     ifstream file;
     string line;
