@@ -113,6 +113,7 @@ void HRDepartment::addEmployee()
 // INCOMPLETE
 void HRDepartment::fireEmployee(string id)
 {   //incomplete code by GreatNaveedBoy-->need to check if employee exists or not
+    Employee emp;
     cout << "Are you sure you want to fire this employee?\n";
     for (auto i : employees)
     {
@@ -120,6 +121,7 @@ void HRDepartment::fireEmployee(string id)
         {
             cout << "Employee name: " << i.name << "\n";
             cout << "Employee id: " << i.id << "\n";
+            emp=i;
             break;
         }
     }
@@ -129,6 +131,11 @@ void HRDepartment::fireEmployee(string id)
     transform(confirm.begin(), confirm.end(), confirm.end(), ::tolower);
 
     // Check if the employee is assigned on any projects or not
+    if(emp.noOfProjects>0)
+    {
+        cout<<"Error!!:Employee is right now assigned to projects so he can't be fired\n";
+        return;
+    }
 
     if (confirm == "no")
     {
@@ -245,4 +252,44 @@ vector<Employee> HRDepartment::searchEmployee()
     }
 
     return matchingEmployees;
+}
+
+
+void HRDepartment::hrRunner()
+{
+    while (1)
+    {
+        cout << "Welcome to the HR Department\n";
+        cout << "1)Add employee\n2)Fire employee\n3)Assign projects\n4)Project completed\n5)Logout\n";
+        string choice;
+        getline(cin, choice);
+        // Standard comparison
+        transform(choice.begin(), choice.end(), choice.begin(), ::tolower);
+        if (choice == "1" or choice=="add employee")
+        {
+            addEmployee();
+        }
+        else if (choice == "2" or choice=="fire employee")
+        {
+            cout << "Enter the id of the employee you want to fire\n";
+            string id;
+            getline(cin, id);
+            fireEmployee(id);
+        }
+        else if (choice == "3" or choice=="assign projects")
+        {
+            // assignProjects();
+        }
+        else if (choice == "4" or choice=="project completed")
+        {
+            cout << "Enter the id of the project which is completed\n";
+            string projectId;
+            getline(cin, projectId);
+            projectCompleted(projectId);
+        }
+        else if (choice == "5" or choice=="logout")
+        {
+            break;
+        }
+    }
 }

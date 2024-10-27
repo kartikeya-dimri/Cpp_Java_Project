@@ -1,18 +1,15 @@
-#pragma once
 #include "DataLoader.h"
+#pragma once
 using namespace std;
-
-
-
 
 class Authenticator
 {
-    private:
-        vector<Authenticate> credentials;
-    public:
-        Authenticator();
-        bool verifyLogin(string status,string username,string password);
-        bool isUniqueId(string id);
+private:
+    vector<Authenticate> credentials;
 
-        // friend class CEO;
+public:
+    Authenticator();
+    // Ask username and password here to shorten main
+    bool verifyLogin(string status);
+    bool isUniqueId(string id);
 };

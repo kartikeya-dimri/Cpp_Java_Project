@@ -10,8 +10,15 @@ Authenticator::Authenticator()
 }
 
 // Verify the login
-bool Authenticator::verifyLogin(string status,string username,string password)
+bool Authenticator::verifyLogin(string status)
 {
+    cout << "Enter your username: ";
+    string username;
+    getline(cin, username);
+
+    string password;
+    cout << "Enter your password: ";
+    getline(cin, password);
     for(auto i:credentials)
     {
         if(i.status==status and i.empId==username and i.password==password && i.hired_status=="HIRED")

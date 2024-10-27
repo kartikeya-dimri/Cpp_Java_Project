@@ -1,7 +1,8 @@
 // #include<bits/stdc++.h>-- this is already included in Authenticate.h and other files
 // #include "Authenticate.h"//
 #include "CEO.h"
-#include "HR.h"//
+#include "HR.h"
+#include "Employees.h"
 using namespace std;
 
 int main()
@@ -26,15 +27,8 @@ int main()
 
         if(status == "CEO")
         {
-            cout << "Enter your username: ";
-            string username;
-            getline(cin, username);
 
-            string password;
-            cout << "Enter your password: ";
-            getline(cin, password);
-
-            if(auth->verifyLogin(status, username, password))
+            if(auth->verifyLogin(status))
             {
                     
                 // Create CEO object once
@@ -48,29 +42,49 @@ int main()
             {
                 cout << "\nWrong username or wrong password\n";
             }
-            delete auth; // Free memory
         }
         else if(status == "HR")
         {
-            cout << "Welcome HR\n";
-            delete auth;
+            if(auth->verifyLogin(status))
+            {
+                // Create HR object once
+                HRDepartment* hr = new HRDepartment();
+                hr->hrRunner();
+                // hr->loggedOut();
+                cout << "Logged out successfully\n";
+                delete hr; // Free memory
+            }
+            else
+            {
+                cout << "\nWrong username or wrong password\n";
+            }
         }
         else if(status == "EMPLOYEE")
         {
-            cout << "Welcome employee\n";
-            delete auth;
+            if(auth->verifyLogin(status))
+            {
+                cout << "Enter your ID: ";
+                string id;
+                getline(cin, id);
+                Employees* emp = new Employees(id);
+                emp->showData();
+                delete emp; // Free memory
+            }
+            else
+            {
+                cout << "\nWrong username or wrong password\n";
+            }
         }
         else if(status == "EXIT")
         {
             cout << "Logged out successfully\n";
-            delete auth;
             break;
         }
         else
         {
             cout << "Invalid command\n";
-            delete auth;
         }
+        delete auth; // Free memory
         cout << "\n";
     }
 

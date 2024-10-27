@@ -18,7 +18,8 @@ private:
 public:
     // Bring the data from the files
     HRDepartment();
-    // Assign the skills which are valid according to the company  standards
+    void hrRunner();
+    // Assign the skills which are valid according to the company standards
     bool validSkill(string skill);
     vector<string> assignSkills(string id);
     bool validId(string id);
