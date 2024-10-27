@@ -1,4 +1,5 @@
 #include "CEO.h"//
+#include "DataWriter.h"
 using namespace std;
 
 
@@ -144,22 +145,24 @@ void CEO::addProject(string projectName,string projectID)
 void CEO::loggedOut()
 {
     // Now write back the contents of the vectors to the file
-    
+    DataWriter d;
+    d.writeCredentials(credentials);
+    d.writeProjects(projects);
 
 
-    ofstream outfile1("Projects.txt");
+    // ofstream outfile1("Projects.txt");
 
-    for(int i=0;i<projects.size();i++)
-    {
-        Project j=projects[i];
-        string write=j.name+":"+j.id+":"+to_string(j.assigned)+":"+to_string(j.completed)+":";
-        string emps="";
-        for(int i=0; i<j.employeesAssigned.size()-1; i++){
-            emps+=j.employeesAssigned[i]+",";
-        }
-        emps+=j.employeesAssigned[j.employeesAssigned.size()-1];
-        // emps+=":";
-        outfile1<<write<<emps<<endl;
-    }
-    outfile1.close();
+    // for(int i=0;i<projects.size();i++)
+    // {
+    //     Project j=projects[i];
+    //     string write=j.name+":"+j.id+":"+to_string(j.assigned)+":"+to_string(j.completed)+":";
+    //     string emps="";
+    //     for(int i=0; i<j.employeesAssigned.size()-1; i++){
+    //         emps+=j.employeesAssigned[i]+",";
+    //     }
+    //     emps+=j.employeesAssigned[j.employeesAssigned.size()-1];
+    //     // emps+=":";
+    //     outfile1<<write<<emps<<endl;
+    // }
+    // outfile1.close();
 }

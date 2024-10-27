@@ -12,7 +12,7 @@ Authenticator::Authenticator()
 // Verify the login
 bool Authenticator::verifyLogin(string status)
 {
-    cout << "Enter your username: ";
+    cout << "Enter your user ID: ";
     string username;
     getline(cin, username);
 
