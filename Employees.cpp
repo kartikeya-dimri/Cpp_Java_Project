@@ -9,6 +9,8 @@ Employee Employees::findEmployee(string id,vector<Employee> employees)
             return i;
         }
     }
+    // Add a return statement for the case where no employee is found
+    return Employee(); // Return a default-constructed Employee
 }
 
 Employees::Employees(string id)
