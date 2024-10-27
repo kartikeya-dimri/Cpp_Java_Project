@@ -26,24 +26,47 @@ CEO::CEO()
     // Close the file
     infile.close();
 
-    // Now read the projects
-    ifstream infile1("Projects.txt");
-    // Read each line in the file
-    while(getline(infile1,line))
+    // Projects
+    ifstream file;
+    file.open("Projects.txt");
+    while (getline(file, line))
     {
-        istringstream iss(line);
-        string part;
-        vector<string> parts;
-        while (getline(iss,part,':'))
+        Project project=Project();
+        size_t pos = 0;
+
+        // Extract name
+        pos = line.find(":");
+        project.name = line.substr(0, pos);
+        line.erase(0, pos + 1);
+
+        // Extract id
+        pos = line.find(":");
+        project.id = line.substr(0, pos);
+        line.erase(0, pos + 1);
+
+        // Extract assigned (convert to bool)
+        pos = line.find(":");
+        project.assigned = (line.substr(0, pos) == "1");
+        line.erase(0, pos + 1);
+
+        // Extract completed (convert to bool)
+        pos = line.find(":");
+        project.completed = (line.substr(0, pos) == "1");
+        line.erase(0, pos + 1);
+
+        // Extract employeesAssigned (split by commas)
+        istringstream employeeStream(line);
+        string employeeId;
+        while (getline(employeeStream, employeeId, ','))
         {
-            parts.push_back(part);
+            project.employeesAssigned.push_back(employeeId);
         }
-        // name:id
-        Project proj={parts[0],parts[1]};
-        projects.push_back(proj);
+
+        projects.push_back(project);
     }
-    // Close the file
-    infile1.close();
+
+    file.close();
+
 }
 
 void CEO::ceoRunner(){
@@ -156,7 +179,7 @@ bool CEO::uniqueProjID(string id)
 {
     for(auto i:projects)
     {
-        if(i.projectID==id)
+        if(i.id==id)
         {
             return false;
         }
@@ -172,12 +195,12 @@ void CEO::addProject(string projectName,string projectID)
         // cin>>projectID;
         getline(cin,projectID);
     }
-    Project add={projectName,projectID};
+    Project add=Project(projectName,projectID);
     projects.push_back(add);
 }
 
 void CEO::loggedOut()
-{
+{// {   BAD CODE BY GREATman
     // Now write back the contents of the vectors to the file
     ofstream outfile("Credentials.txt");
 
@@ -195,8 +218,14 @@ void CEO::loggedOut()
     for(int i=0;i<projects.size();i++)
     {
         Project j=projects[i];
-        string write=j.projectID+":"+j.projectname;
-        outfile1<<write<<"\n";
+        string write=j.name+":"+j.id+":"+to_string(j.assigned)+":"+to_string(j.completed)+":";
+        string emps="";
+        for(int i=0; i<j.employeesAssigned.size()-1; i++){
+            emps+=j.employeesAssigned[i]+",";
+        }
+        emps+=j.employeesAssigned[j.employeesAssigned.size()-1];
+        // emps+=":";
+        outfile1<<write<<emps<<endl;
     }
     outfile1.close();
 }

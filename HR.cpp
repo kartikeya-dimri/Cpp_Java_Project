@@ -1,7 +1,8 @@
 #include "HR.h"
-#include <bits/stdc++.h>
+// #include <bits/stdc++.h>
 using namespace std;
 
+// SHORTEN THIS
 HRDepartment::HRDepartment()
 {
     // Bring the data from the files
@@ -31,8 +32,9 @@ HRDepartment::HRDepartment()
 
     // Employees
     vector<Employee> employees;
-    ifstream file("Employees.txt");
-    string line;
+    ifstream file;
+    file.open("Employees.txt");
+
 
     while (getline(file, line))
     {
@@ -87,9 +89,7 @@ HRDepartment::HRDepartment()
     file.close();
 
     // Projects
-    ifstream file("Projects.txt");
-    string line;
-
+    file.open("Projects.txt");
     while (getline(file, line))
     {
         Project project;
@@ -222,8 +222,10 @@ void HRDepartment::addEmployee()
     employees.push_back({name, age, id, 0, projects, skills, "HIRED"});
 }
 
+
+// INCOMPLETE
 void HRDepartment::fireEmployee(string id)
-{
+{   //incomplete code by GreatNaveedBoy-->need to check if employee exists or not
     cout << "Are you sure you want to fire this employee?\n";
     for (auto i : employees)
     {
@@ -238,6 +240,8 @@ void HRDepartment::fireEmployee(string id)
     string confirm;
     getline(cin, confirm);
     transform(confirm.begin(), confirm.end(), confirm.end(), ::tolower);
+
+    // Check if the employee is assigned on any projects or not
 
     if (confirm == "no")
     {
@@ -300,9 +304,11 @@ void HRDepartment::projectCompleted(string projectId)
 
 }
 
-
+// INCOMPLETE
 vector<Employee> HRDepartment::searchEmployee()
 {
+    // Sort according to the availability
+    // Assigned projects==availability
     cout<<"Enter the skills of the employees you are searching for\n";
     cout<<"Enter \"over\" when you are done";
 

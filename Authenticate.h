@@ -2,6 +2,21 @@
 #include<bits/stdc++.h>
 using namespace std;
 
+struct Project
+{
+    string name;
+    string id;
+    bool assigned=0;
+    bool completed=0;
+    // Just keep their ids
+    vector<string> employeesAssigned;
+
+    Project()=default;
+
+    Project(string pName, string id)
+        :name(pName),id(id) {}
+};
+
 
 struct Authenticate
 {

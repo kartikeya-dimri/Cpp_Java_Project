@@ -1,14 +1,17 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "Authenticate.h"
 using namespace std;
 
-struct Authenticate
-{
-    string empId;
-    string password;
-    string status;
-    string hired_status;
-};
+
+
+// struct Authenticate
+// {
+//     string empId;
+//     string password;
+//     string status;
+//     string hired_status;
+// };
 
 struct Employee
 {
@@ -22,15 +25,7 @@ struct Employee
     string hired_status;
 };
 
-struct Project
-{
-    string name;
-    string id;
-    bool assigned;
-    bool completed;
-    // Just keep their ids
-    vector<string> employeesAssigned;
-};
+
 
 class HRDepartment
 {
