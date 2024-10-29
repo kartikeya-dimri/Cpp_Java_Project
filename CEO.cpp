@@ -141,7 +141,7 @@ void CEO::addProject(string projectName,string projectID)
     projects.push_back(add);
 }
 
-void CEO::loggedOut()
+void CEO:: loggedOut()
 {
     // Now write back the contents of the vectors to the file
     
