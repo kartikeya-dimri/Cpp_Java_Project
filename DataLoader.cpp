@@ -2,26 +2,23 @@
 
 vector<Authenticate> DataLoader::loadCredentials()
 {
-
     vector<Authenticate> credentials;
     // Credentials
     ifstream infile("Credentials.txt");
-    // if(!infile.is_open()){
-    //    cerr << "Error: Could not open file 'Credentials.txt'" << endl;
-    //     std::cout << "Current path: " << std::filesystem::current_path() << std::endl;
-    //     return credentials;
-    // }
+    if(!infile.is_open()){
+        cerr << "Error: Could not open file 'Credentials.txt'" << endl;
+        // std::cout << "Current path: " << std::filesystem::current_path() << std::endl;
+        return credentials;
+    }
 
     string line;
-    if(!infile) 
-    {
-        cerr<<"cant open file"<<endl;
-    }
 
     // Read each line in the file
     while (getline(infile, line))
     {
-        // cout<<"hi"<<endl;
+        if(line==""){//used when an empty string due to new line at the end of file is read, else it'll give seg fault
+            break;
+        }
         istringstream iss(line);
         string part;
         vector<string> parts;
@@ -37,10 +34,6 @@ vector<Authenticate> DataLoader::loadCredentials()
     }
     // Close the file
     infile.close();
-    // for(auto i:credentials){
-    //     cout<<i.empId<<" "<<i.password<<" "<<i.status<<" "<<i.hired_status<<endl;
-    // }
-    // cout<<credentials.size()<<endl;
 
     return credentials;
 }
@@ -62,6 +55,9 @@ vector<Employee> DataLoader::loadEmployees()
 
     while (getline(file, line))
     {
+        if(line==""){//used when an empty string due to new line at the end of file is read, else it'll give seg fault
+            break;
+        }
         Employee employee;
         size_t pos = 0;
 
@@ -131,6 +127,9 @@ vector<Project> DataLoader::loadProjects()
     }
     while (getline(file, line))
     {
+        if(line==""){//used when an empty string due to new line at the end of file is read, else it'll give seg fault
+            break;
+        }
         Project project;
         size_t pos = 0;
 
