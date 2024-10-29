@@ -44,11 +44,15 @@ vector<string> HRDepartment::assignSkills(string id)
         // Check it
         if (!validSkill(skillInput))
         {
-            cout << "Error! Invalid skill\n";
+            cout << "Error! Invalid skill. \n";
             while (!validSkill(skillInput))
             {
-                cout << "Please enter a valid skill";
+                cout << "Please enter a valid skill: ";
                 getline(cin, skillInput);
+                if (skillInput == "over")
+                {
+                    return skillsAssigned;
+                }
             }
         }
         // Valid skill entered
@@ -76,7 +80,7 @@ bool HRDepartment::validId(string id)
 }
 
 void HRDepartment::addEmployee()
-{
+{   //INCOMPLETE-- NEED TO CHECK IF ALL THE INPUTS ARE OF VALID DATA TYPES
     cout << "Enter employee details\n";
     string name, age, id;
     // Nothing assigned to new hire
@@ -257,9 +261,10 @@ vector<Employee> HRDepartment::searchEmployee()
 
 void HRDepartment::hrRunner()
 {
+    cout << "Welcome to the HR Department\n";
     while (1)
     {
-        cout << "Welcome to the HR Department\n";
+        cout<<"Select the number of the action that you want to do"<<endl;
         cout << "1)Add employee\n2)Fire employee\n3)Assign projects\n4)Project completed\n5)Logout\n";
         string choice;
         getline(cin, choice);
@@ -289,7 +294,15 @@ void HRDepartment::hrRunner()
         }
         else if (choice == "5" or choice=="logout")
         {
+            loggedOut();
             break;
         }
     }
+}
+
+void HRDepartment::loggedOut(){
+    DataWriter d;
+    d.writeCredentials(credentials);
+    d.writeEmployees(employees);
+    d.writeProjects(projects);
 }
