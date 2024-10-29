@@ -105,19 +105,40 @@ void CEO::addHR(string id, string password)
     credentials.push_back(hr);
 }
 
-
 void CEO::removeHR(string id)
 {
     for(int j = 0; j < credentials.size(); j++)
     {
-        if(credentials[j].empId == id)
+        if(credentials[j].empId == id && credentials[j].status=="HR")
         {
-            credentials[j].hired_status = "FIRED";
-            return;  // Exit after finding and modifying
+            if(credentials[j].hired_status == "FIRED")
+            {
+                cout << "HR with ID " << id << " is already fired!" << endl;
+                return;
+            }
+            
+            // Confirm before firing
+            cout << "Are you sure you want to fire HR with ID " << id << "? (yes/no): ";
+            
+            string confirm;
+            getline(cin, confirm);
+            transform(confirm.begin(), confirm.end(), confirm.begin(), ::tolower);
+
+            if(confirm == "yes")
+            {
+                credentials[j].hired_status = "FIRED";
+                cout << "HR with ID " << id << " has been fired." << endl;
+            }
+            else
+            {
+                cout << "Operation cancelled." << endl;
+            }
+            return;  // Exit after finding and handling the employee
         }
     }
     cout << "HR with ID " << id << " not found!" << endl;
 }
+
 
 bool CEO::uniqueProjID(string id)
 {

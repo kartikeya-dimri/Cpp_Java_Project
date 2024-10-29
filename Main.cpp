@@ -24,7 +24,7 @@ int main()
 
         // Object of authenticate class to access the methods
         Authenticator* auth = new Authenticator();
-
+        
         if(status == "CEO")
         {
 

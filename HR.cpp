@@ -127,13 +127,19 @@ void HRDepartment::fireEmployee(string ID)
     {
         if (i.id == ID)
         {
+            cout<<"Employee found\n";
             cout << "Employee name: " << i.name << "\n";
             cout << "Employee id: " << i.id << "\n";
             emp=i;
             found=true;
-            cout<<"Employee found\n";
             break;
         }
+    }
+    // Check if the employee exists
+    if(!found)
+    {
+        cout<<"Employee with ID "<<ID<<" not found!\n";
+        return;
     }
     cout << "Enter yes to confirm, no to cancel\n";
     string confirm;
@@ -147,12 +153,6 @@ void HRDepartment::fireEmployee(string ID)
     }
     else
     {
-        // Check if the employee exists
-        if(!found)
-        {
-            cout<<"Employee with ID "<<ID<<" not found!\n";
-            return;
-        }
         // Check if the employee is assigned to any projects
         if(emp.noOfProjects>0)
         {
