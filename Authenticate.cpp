@@ -1,12 +1,12 @@
-#include "Authenticate.h"//
+#include "Authenticate.h" //
 using namespace std;
 
 Authenticator::Authenticator()
 {
 
-    DataLoader* dl=new DataLoader();
+    DataLoader *dl = new DataLoader();
     // Credentials
-    credentials=dl->loadCredentials();  
+    credentials = dl->loadCredentials();
 }
 
 // Verify the login
@@ -19,9 +19,9 @@ bool Authenticator::verifyLogin(string status)
     string password;
     cout << "Enter your password: ";
     getline(cin, password);
-    for(auto i:credentials)
+    for (auto i : credentials)
     {
-        if(i.status==status and i.empId==username and i.password==password && i.hired_status=="HIRED")
+        if (i.status == status and i.empId == username and i.password == password && i.hired_status == "HIRED")
         {
             return true;
         }
@@ -32,9 +32,9 @@ bool Authenticator::verifyLogin(string status)
 // Check if the entered ID is unique
 bool Authenticator::isUniqueId(string id)
 {
-    for(auto i:credentials)
+    for (auto i : credentials)
     {
-        if(i.empId==id)
+        if (i.empId == id)
         {
             return false;
         }
