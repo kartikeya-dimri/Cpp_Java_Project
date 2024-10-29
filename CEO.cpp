@@ -105,6 +105,7 @@ void CEO::addHR(string id, string password)
     credentials.push_back(hr);
 }
 
+
 void CEO::removeHR(string id)
 {
     for(int j = 0; j < credentials.size(); j++)

@@ -9,12 +9,15 @@ void DataWriter::writeProjects(const std::vector<Project>& projects){
         Project j=projects[i];
         string write=j.name+":"+j.id+":"+to_string(j.assigned)+":"+to_string(j.completed)+":";
         string emps="";
-        for(int i=0; i<j.employeesAssigned.size(); i++){
-            emps+=j.employeesAssigned[i];
-            if(i<j.employeesAssigned.size()-1){
-                emps+=",";
+        if (!j.employeesAssigned.empty()) {
+        for (size_t i = 0; i < j.employeesAssigned.size(); i++) {
+            emps += j.employeesAssigned[i];
+            if (i < j.employeesAssigned.size() - 1) {
+                emps += ",";
+            }
             }
         }
+
         // emps+=j.employeesAssigned[j.employeesAssigned.size()-1];
         // // emps+=":";
         outfile1<<write<<emps<<endl;
@@ -45,6 +48,9 @@ void DataWriter::writeEmployees(const vector<Employee>& employees) {
 
     for (const auto& employee : employees) {
         // Write the employee details in the same format expected by loadEmployees()
+        if(employee.hired_status=="FIRED"){
+            continue;
+        }
         stringstream ss;
         ss << employee.name << ":" 
            << employee.age << ":" 

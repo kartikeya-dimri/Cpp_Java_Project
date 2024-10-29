@@ -1,7 +1,7 @@
 #pragma once//
 #include "UtilityStructs.h"
 
-// This class has all the methods for loading the data from the files
+// This class has all the methods for writing the data to the files
 
 class DataWriter
 {

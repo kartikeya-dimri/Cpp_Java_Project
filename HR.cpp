@@ -3,7 +3,7 @@
 using namespace std;
 
 
-// SHORTEN THIS
+
 HRDepartment::HRDepartment()
 {
     // Bring the data from the files
@@ -11,9 +11,12 @@ HRDepartment::HRDepartment()
     // Credentials
     credentials=dl->loadCredentials();
     // Employees
-    vector<Employee> employees=dl->loadEmployees();
+    employees=dl->loadEmployees();
     // Projects
     projects=dl->loadProjects();
+
+    // Free allocated memory
+    delete dl;
 }
 
 bool HRDepartment::validSkill(string skill)
@@ -94,7 +97,7 @@ void HRDepartment::addEmployee()
     getline(cin, id);
 
     // Keep asking till we get a valid id
-    while (!validId(id))
+    while (!validId(id) || id.empty())
     {
         cout << "Please enter a valid id: ";
         getline(cin, id);
@@ -115,17 +118,20 @@ void HRDepartment::addEmployee()
 
 
 // INCOMPLETE
-void HRDepartment::fireEmployee(string id)
+void HRDepartment::fireEmployee(string ID)
 {   //incomplete code by GreatNaveedBoy-->need to check if employee exists or not
     Employee emp;
+    bool found=false;
     cout << "Are you sure you want to fire this employee?\n";
     for (auto i : employees)
     {
-        if (i.id == id)
+        if (i.id == ID)
         {
             cout << "Employee name: " << i.name << "\n";
             cout << "Employee id: " << i.id << "\n";
             emp=i;
+            found=true;
+            cout<<"Employee found\n";
             break;
         }
     }
@@ -134,12 +140,6 @@ void HRDepartment::fireEmployee(string id)
     getline(cin, confirm);
     transform(confirm.begin(), confirm.end(), confirm.end(), ::tolower);
 
-    // Check if the employee is assigned on any projects or not
-    if(emp.noOfProjects>0)
-    {
-        cout<<"Error!!:Employee is right now assigned to projects so he can't be fired\n";
-        return;
-    }
 
     if (confirm == "no")
     {
@@ -147,20 +147,33 @@ void HRDepartment::fireEmployee(string id)
     }
     else
     {
-        for (auto i : credentials)
+        // Check if the employee exists
+        if(!found)
         {
-            if (i.empId == id)
+            cout<<"Employee with ID "<<ID<<" not found!\n";
+            return;
+        }
+        // Check if the employee is assigned to any projects
+        if(emp.noOfProjects>0)
+        {
+            cerr<<"Error: Employee is assigned to projects, can't be fired right now\n";
+            return;
+        }
+        // Pass references for altering the vector
+        for(int j = 0; j < credentials.size(); j++)
+        {
+            if(credentials[j].empId == ID)
             {
-                i.hired_status = "FIRED";
-                break;
+                credentials[j].hired_status = "FIRED";
+                break;  // Exit after finding and modifying
             }
         }
-        for (auto i : employees)
+        for (int i = 0; i < employees.size(); i++)
         {
-            if (i.id == id)
+            if (employees[i].id == ID)
             {
-                i.hired_status = "FIRED";
-                return;
+                employees[i].hired_status = "FIRED";
+                break;
             }
         }
     }
