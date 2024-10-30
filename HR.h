@@ -21,7 +21,7 @@ public:
     void hrRunner();
     // Assign the skills which are valid according to the company standards
     bool validSkill(std::string skill);
-    std::vector<std::string> assignSkills(std::string id);
+    std::vector<std::string> assignSkills(std::string id,bool addingEmployee=0);
     bool validId(std::string id);
     bool isEmployeeAssignedProject(Employee e,std::string projectId);
     void addEmployee();

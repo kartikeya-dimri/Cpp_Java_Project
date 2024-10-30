@@ -1,29 +1,42 @@
 #include "DataWriter.h"
 using namespace std;
 
-void DataWriter::writeProjects(const std::vector<Project>& projects){
-    ofstream outfile1("Projects.txt");
+void DataWriter::writeProjects(const std::vector<Project>& projects) {
+    // Format: ProjectName:ProjectID:assigned(0/1):completed(0/1):emp1,emp2,emp3:skill1,skill2,skill3
 
-    for(int i=0;i<projects.size();i++)
-    {
-        Project j=projects[i];
-        string write=j.name+":"+j.id+":"+to_string(j.assigned)+":"+to_string(j.completed)+":";
-        string emps="";
-        if (!j.employeesAssigned.empty()) {
-        for (size_t i = 0; i < j.employeesAssigned.size(); i++) {
-            emps += j.employeesAssigned[i];
-            if (i < j.employeesAssigned.size() - 1) {
+    ofstream outfile("Projects.txt");
+
+    for (const auto& project : projects) {
+        // Basic project details
+        string write = project.name + ":" + project.id + ":" + 
+                       to_string(project.assigned) + ":" + 
+                       to_string(project.completed) + ":";
+
+        // Concatenate employee IDs into a comma-separated string
+        string emps;
+        for (int i = 0; i < project.employeesAssigned.size(); i++) {
+            emps += project.employeesAssigned[i];
+            if (i < project.employeesAssigned.size() - 1) {
                 emps += ",";
-            }
             }
         }
 
-        // emps+=j.employeesAssigned[j.employeesAssigned.size()-1];
-        // // emps+=":";
-        outfile1<<write<<emps<<endl;
+        // Concatenate skills into a comma-separated string
+        string skills;
+        for (int i = 0; i < project.skills.size(); i++) {
+            skills += project.skills[i];
+            if (i < project.skills.size() - 1) {
+                skills += ",";
+            }
+        }
+
+        // Write the line to the file
+        outfile << write << emps << ":" << skills << endl;
     }
-    outfile1.close();
+
+    outfile.close();
 }
+
 
 void DataWriter::writeCredentials(const std::vector<Authenticate>& credentials){
     ofstream outfile("Credentials.txt");
@@ -66,7 +79,7 @@ void DataWriter::writeEmployees(const vector<Employee>& employees) {
         }
 
         // Add delimiter to separate projects and skills
-        ss << ",,,";
+        ss << ":";
 
         // Write skills, separated by commas
         for (size_t i = 0; i < employee.skills.size(); ++i) {

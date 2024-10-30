@@ -38,28 +38,23 @@ vector<Authenticate> DataLoader::loadCredentials()
     return credentials;
 }
 
-
-vector<Employee> DataLoader::loadEmployees()
-{
-    // Employees
+vector<Employee> DataLoader::loadEmployees() {
+    ifstream infile("Employees.txt");
     vector<Employee> employees;
-    ifstream file;
-    file.open("Employees.txt");
-    string line;
 
-    if(!file) 
-    {
-        cerr<<"cant open file"<<endl;
+    if (!infile) {
+        cerr << "Error: Could not open Employees.txt for reading." << endl;
+        return employees;
     }
 
-
-    while (getline(file, line))
-    {
-        if(line==""){//used when an empty string due to new line at the end of file is read, else it'll give seg fault
-            break;
+    string line;
+    while (getline(infile, line)) {
+        if (line.empty()) {
+            continue; // Skip empty lines
         }
+
         Employee employee;
-        size_t pos = 0;
+        int pos = 0;
 
         // Extract name
         pos = line.find(":");
@@ -71,45 +66,46 @@ vector<Employee> DataLoader::loadEmployees()
         employee.age = line.substr(0, pos);
         line.erase(0, pos + 1);
 
-        // Extract id
+        // Extract ID
         pos = line.find(":");
         employee.id = line.substr(0, pos);
         line.erase(0, pos + 1);
 
-        // Extract noOfProjects
+        // Extract number of projects
         pos = line.find(":");
-        // Convert to string
         employee.noOfProjects = stoi(line.substr(0, pos));
         line.erase(0, pos + 1);
 
-        // Separate projects and skills (delimited by ",,,")
-        pos = line.find(",,,");
-        string projectsPart = line.substr(0, pos);
-        string skillsPart = pos != string::npos ? line.substr(pos + 3) : "";
+        // Extract assigned projects (comma-separated)
+        pos = line.find(":");
+        string projectsStr = line.substr(0, pos);
+        line.erase(0, pos + 1);
 
-        // Split projects by comma and add to assignedProjects
-        istringstream projStream(projectsPart);
-        string project;
-        while (getline(projStream, project, ','))
-        {
-            employee.assignedProjects.push_back(project);
+        istringstream projectStream(projectsStr);
+        string projectID;
+        while (getline(projectStream, projectID, ',')) {
+            if (!projectID.empty()) {
+                employee.assignedProjects.push_back(projectID);
+            }
         }
 
-        // Split skills by comma and add to skills
-        istringstream skillStream(skillsPart);
+        // Extract skills (comma-separated)
+        istringstream skillStream(line);
         string skill;
-        while (getline(skillStream, skill, ','))
-        {
-            employee.skills.push_back(skill);
+        while (getline(skillStream, skill, ',')) {
+            if (!skill.empty()) {
+                employee.skills.push_back(skill);
+            }
         }
 
+        // Add employee to the list
         employees.push_back(employee);
     }
 
-    file.close();
-
+    infile.close();
     return employees;
 }
+
 
 vector<Project> DataLoader::loadProjects()
 {
@@ -178,63 +174,5 @@ vector<Project> DataLoader::loadProjects()
     }
 
     file.close();
-    return projects;
-}
-
-
-
-{
-    ifstream file;
-    string line;
-    vector<Project> projects;
-
-    // Projects
-    file.open("Projects.txt");
-
-    if(!file) 
-    {
-        cerr<<"cant open file"<<endl;
-    }
-    while (getline(file, line))
-    {
-        if(line==""){//used when an empty string due to new line at the end of file is read, else it'll give seg fault
-            break;
-        }
-        Project project;
-        size_t pos = 0;
-
-        // Extract name
-        pos = line.find(":");
-        project.name = line.substr(0, pos);
-        line.erase(0, pos + 1);
-
-        // Extract id
-        pos = line.find(":");
-        project.id = line.substr(0, pos);
-        line.erase(0, pos + 1);
-
-        // Extract assigned (convert to bool)
-        pos = line.find(":");
-        project.assigned = (line.substr(0, pos) == "1");
-        line.erase(0, pos + 1);
-
-        // Extract completed (convert to bool)
-        pos = line.find(":");
-        project.completed = (line.substr(0, pos) == "1");
-        line.erase(0, pos + 1);
-
-        // Extract employeesAssigned (split by commas)
-        istringstream employeeStream(line);
-        string employeeId;
-        while (getline(employeeStream, employeeId, ','))
-        {
-            project.employeesAssigned.push_back(employeeId);
-        }
-
-        projects.push_back(project);
-    }
-
-    file.close();
-
     return projects;
 }

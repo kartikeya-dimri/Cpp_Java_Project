@@ -31,11 +31,13 @@ bool HRDepartment::validSkill(string skill)
     return false;
 }
 
-vector<string> HRDepartment::assignSkills(string id)
+vector<string> HRDepartment::assignSkills(string id,bool addingEmployee)//by default addingEmployee is false
 {
     // Assign skills to the employee
-    cout << "Enter the skills of the employee with id " << id << "\n";
-    cout << "Enter \"over\" when you are done\n";
+    if(addingEmployee){
+        cout << "Enter the skills of the employee with id " << id << "\n";
+        cout << "Enter \"over\" when you are done\n";
+    }
 
     string skillInput;
     vector<string> skillsAssigned;
@@ -106,7 +108,7 @@ void HRDepartment::addEmployee()
     cout << "Enter employee's password: ";
     getline(cin, password);
     // Call assignSkills
-    vector<string> skills = assignSkills(id);
+    vector<string> skills = assignSkills(id,true);
     // assignedProjects vector will be empty
 
     // Empty vector assigned
@@ -270,6 +272,62 @@ vector<Employee> HRDepartment::searchEmployee()
 
     return matchingEmployees;
 }
+
+
+void HRDepartment::assignProjects() {
+    //here all the unassigned projects till now will be assigned. 
+    bool notExecuted=true;
+    for (auto& project : projects) {
+        if (project.assigned || project.completed) {
+            continue; // Skip projects that are already assigned or completed
+        }
+        notExecuted=false;
+
+        // Prompt for skills needed for this project
+        cout << "Enter the skills needed for project: " << project.name << " (ID: " << project.id << ")\n";
+        cout << "Enter 'over' when you are done.\n";
+
+        vector<string> requiredSkills=assignSkills("");
+
+        // Find employees with the required skills who are not fully assigned
+        vector<Employee*> availableEmployees;
+        for (auto& employee : employees) {
+            bool hasAllSkills = true;
+
+            // Check if employee has all required skills
+            for (const auto& skill : requiredSkills) {
+                if (find(employee.skills.begin(), employee.skills.end(), skill) == employee.skills.end()) {
+                    hasAllSkills = false;
+                    break;
+                }
+            }
+
+            // If employee has all skills and is not overloaded with projects, add them to available employees
+            if (hasAllSkills && employee.noOfProjects < 3) {  // Assuming a threshold of 3 projects
+                availableEmployees.push_back(&employee);
+            }
+        }
+
+        // Assign available employees to the project
+        if (!availableEmployees.empty()) {
+            for (auto* employee : availableEmployees) {
+                employee->assignedProjects.push_back(project.id);
+                employee->noOfProjects++;
+                project.employeesAssigned.push_back(employee->id);
+            }
+            project.assigned = true; // Mark project as assigned
+            cout << "Project " << project.name << " (ID: " << project.id << ") assigned to employees.\n";
+        } 
+        else {
+            cout << "No available employees found with the required skills for project " << project.name << ".\n";
+        }
+    }
+
+    if(notExecuted){
+        cout<<"All the projects are already assigned or completed"<<endl;
+    }
+}
+
 
 
 void HRDepartment::hrRunner()
