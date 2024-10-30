@@ -52,6 +52,8 @@ void DataWriter::writeCredentials(const std::vector<Authenticate>& credentials){
 
 
 void DataWriter::writeEmployees(const vector<Employee>& employees) {
+    //name:age:id:numOfProjects:projectid1,2,3..:skills1,2,3
+    
     ofstream outfile("Employees.txt");
 
     if (!outfile) {

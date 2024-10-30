@@ -217,77 +217,89 @@ void HRDepartment::projectCompleted(string projectId)
 
 }
 
-// INCOMPLETE
-vector<Employee> HRDepartment::searchEmployee()
-{
-    // Sort according to the availability
-    // Assigned projects==availability
-    cout<<"Enter the skills of the employees you are searching for\n";
-    cout<<"Enter \"over\" when you are done";
+// // INCOMPLETE
+// vector<Employee> HRDepartment::searchEmployee()
+// {
+//     // Sort according to the availability
+//     // Assigned projects==availability
+//     cout<<"Enter the skills of the employees you are searching for\n";
+//     cout<<"Enter \"over\" when you are done";
 
-    string skillInput;
-    vector<string> skillsearch;
+//     string skillInput;
+//     vector<string> skillsearch;
 
-    getline(cin,skillInput);
+//     getline(cin,skillInput);
 
-    while (1)
-    {
-        while(!validSkill(skillInput))
-        {
-            cout<<"Please enter a valid skill!!: ";
-            getline(cin,skillInput);
-        }
+//     while (1)
+//     {
+//         while(!validSkill(skillInput))
+//         {
+//             cout<<"Please enter a valid skill!!: ";
+//             getline(cin,skillInput);
+//         }
 
-        skillsearch.push_back(skillInput);
+//         skillsearch.push_back(skillInput);
 
-        getline(cin,skillInput);
-        if(skillInput=="over")
-        {
-            break;
-        }
+//         getline(cin,skillInput);
+//         if(skillInput=="over")
+//         {
+//             break;
+//         }
 
-    }
+//     }
 
 
-    vector<Employee> matchingEmployees;
+//     vector<Employee> matchingEmployees;
 
-    for(auto i:employees)
-    {
-        bool hasAllSkills=true;
-        for(auto skill:skillsearch)
-        {
-            // One of the skills is not found
-            if(find(i.skills.begin(),i.skills.end(),skill)==i.skills.end())
-            {
-                hasAllSkills=false;
-                break;
-            }
-        }
-        // Has all the required skills
-        if(hasAllSkills)
-        {
-            matchingEmployees.push_back(i);
-        }
-    }
+//     for(auto i:employees)
+//     {
+//         bool hasAllSkills=true;
+//         for(auto skill:skillsearch)
+//         {
+//             // One of the skills is not found
+//             if(find(i.skills.begin(),i.skills.end(),skill)==i.skills.end())
+//             {
+//                 hasAllSkills=false;
+//                 break;
+//             }
+//         }
+//         // Has all the required skills
+//         if(hasAllSkills)
+//         {
+//             matchingEmployees.push_back(i);
+//         }
+//     }
 
-    return matchingEmployees;
+//     return matchingEmployees;
+// }
+
+bool HRDepartment::sortEmployeesForAssign(Employee* & a, Employee* & b){
+    return a->noOfProjects < b->noOfProjects;
 }
 
 
-void HRDepartment::assignProjects() {
-    //here all the unassigned projects till now will be assigned. 
-    bool notExecuted=true;
+
+void HRDepartment::assignProjects(string projectId) {
     for (auto& project : projects) {
-        if (project.assigned || project.completed) {
-            continue; // Skip projects that are already assigned or completed
+        if (project.id!=projectId) {
+            continue; 
         }
-        notExecuted=false;
+        if(project.assigned|| project.completed){
+            // Skip projects that are already assigned or completed
+            cout<<"This project has already been assigned or completed"<<endl;
+            return;
+        }
 
         // Prompt for skills needed for this project
         cout << "Enter the skills needed for project: " << project.name << " (ID: " << project.id << ")\n";
         cout << "Enter 'over' when you are done.\n";
 
         vector<string> requiredSkills=assignSkills("");
+        project.skills=requiredSkills;
+        int requiredNumber;
+        cout<<"Enter the number of employees that are required for completing this project"<<endl;
+        cin>>requiredNumber;
+        cin.ignore(); // to clear the newline character from the input buffer
 
         // Find employees with the required skills who are not fully assigned
         vector<Employee*> availableEmployees;
@@ -303,29 +315,39 @@ void HRDepartment::assignProjects() {
             }
 
             // If employee has all skills and is not overloaded with projects, add them to available employees
-            if (hasAllSkills && employee.noOfProjects < 3) {  // Assuming a threshold of 3 projects
+            if (hasAllSkills && employee.noOfProjects < maxNoOfProjects) {  // Assuming a threshold of 3 projects
                 availableEmployees.push_back(&employee);
             }
         }
 
         // Assign available employees to the project
-        if (!availableEmployees.empty()) {
-            for (auto* employee : availableEmployees) {
-                employee->assignedProjects.push_back(project.id);
-                employee->noOfProjects++;
-                project.employeesAssigned.push_back(employee->id);
+        if (!availableEmployees.empty() && availableEmployees.size()>=requiredNumber) {
+            //now I'll sort the employees on the basis of lesser number of assigned projects and take the ones with the least number of assigned projects
+            sort(availableEmployees.begin(),availableEmployees.end(),HRDepartment::sortEmployeesForAssign);
+             // Assign the required number of employees to the project
+            for (int i = 0; i < requiredNumber; i++) {
+                Employee* emp = availableEmployees[i];
+                emp->assignedProjects.push_back(project.id);//push this project ID into this employee's projects vector
+                emp->noOfProjects++;
+                project.employeesAssigned.push_back(emp->id);
             }
-            project.assigned = true; // Mark project as assigned
-            cout << "Project " << project.name << " (ID: " << project.id << ") assigned to employees.\n";
-        } 
-        else {
-            cout << "No available employees found with the required skills for project " << project.name << ".\n";
-        }
-    }
 
-    if(notExecuted){
-        cout<<"All the projects are already assigned or completed"<<endl;
+            // Mark the project as assigned
+            project.assigned = true;
+            cout << "Project " << project.name << " has been successfully assigned to employees." << endl;
+        } 
+        
+        else {
+            int need=requiredNumber-availableEmployees.size();
+            cout << "Need to hire "<<need<<" more employees for completing this project-" << project.name << ".\n";
+            cout<<"Please add "<<need<<" more employees with these skills";
+            for(int i=1; i<=requiredSkills.size(); i++){
+                cout<<i<<". "<<requiredSkills[i-1]<<endl;
+            }
+        }
+        return;
     }
+    cout<<"No project with this project ID found. Invalid ID"<<endl;
 }
 
 
@@ -354,7 +376,10 @@ void HRDepartment::hrRunner()
         }
         else if (choice == "3" or choice=="assign projects")
         {
-            // assignProjects();
+            cout << "Enter the id of the project which is to be assigned\n";
+            string projectId;
+            getline(cin, projectId);
+            assignProjects(projectId);
         }
         else if (choice == "4" or choice=="project completed")
         {

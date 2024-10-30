@@ -29,6 +29,7 @@ public:
     void projectCompleted(std::string projectId);
     // Just return the ids of the employees satisfying the conditions
     std::vector<Employee> searchEmployee();
-    void assignProjects();
+    void assignProjects(string projectId);
     void loggedOut();
+    static bool sortEmployeesForAssign(Employee* & a, Employee* & b);//need to make this static because using with stl sort
 };
