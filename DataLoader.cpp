@@ -111,8 +111,78 @@ vector<Employee> DataLoader::loadEmployees()
     return employees;
 }
 
-
 vector<Project> DataLoader::loadProjects()
+{
+    //ProjectName:ProjectID:assigned(0/1):completed(0/1):emp1,emp2,emp3:skill1,skill2,skill3
+
+    ifstream file("Projects.txt");
+    string line;
+    vector<Project> projects;
+
+    if (!file)
+    {
+        cerr << "Cannot open file" << endl;
+        return projects;
+    }
+
+    while (getline(file, line))
+    {
+        if (line.empty())
+        {
+            continue; // Skip empty lines to avoid segmentation faults
+        }
+
+        Project project;
+        size_t pos = 0;
+
+        // Extract project name
+        pos = line.find(":");
+        project.name = line.substr(0, pos);
+        line.erase(0, pos + 1);
+
+        // Extract project ID
+        pos = line.find(":");
+        project.id = line.substr(0, pos);
+        line.erase(0, pos + 1);
+
+        // Extract assigned status (convert to bool)
+        pos = line.find(":");
+        project.assigned = (line.substr(0, pos) == "1");
+        line.erase(0, pos + 1);
+
+        // Extract completed status (convert to bool)
+        pos = line.find(":");
+        project.completed = (line.substr(0, pos) == "1");
+        line.erase(0, pos + 1);
+
+        // Extract employeesAssigned (split by commas)
+        pos = line.find(":");
+        string employeesStr = line.substr(0, pos);
+        line.erase(0, pos + 1);
+        istringstream employeeStream(employeesStr);
+        string employeeId;
+        while (getline(employeeStream, employeeId, ','))
+        {
+            project.employeesAssigned.push_back(employeeId);
+        }
+
+        // Extract skills required (split by commas)
+        istringstream skillStream(line);
+        string skill;
+        while (getline(skillStream, skill, ','))
+        {
+            project.skills.push_back(skill);
+        }
+
+        projects.push_back(project);
+    }
+
+    file.close();
+    return projects;
+}
+
+
+
 {
     ifstream file;
     string line;

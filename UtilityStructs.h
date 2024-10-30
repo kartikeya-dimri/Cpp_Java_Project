@@ -11,6 +11,7 @@ struct Project
     bool completed=0;
     // Just keep their ids
     vector<string> employeesAssigned;
+    vector<string>skills;
 
     Project()=default;
 
