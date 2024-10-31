@@ -59,7 +59,7 @@ int main()
                 cout << "\nWrong username or wrong password\n";
             }
         }
-        else if(status == "EMPLOYEE")
+        else if(status == "EMP")
         {
             if(auth->verifyLogin(status))
             {
