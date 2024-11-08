@@ -18,23 +18,23 @@ public class Auth {
             return BCrypt.checkpw(plainPassword, hashedPassword);
         }
     }
-    public static boolean signin(String userName,String pass) throws Exception{
+    public static boolean signin(int empid,String pass) throws Exception{
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         Connection con=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Company","root","123456@mysql");
         PreparedStatement ps0=con.prepareStatement("select *from credentials");
         ResultSet rs= ps0.executeQuery();
-        boolean userexists=false;
+        boolean emplid=false;
         String hashpas = null;
         while (rs.next()){
-            if(Objects.equals(userName, rs.getString("username"))){
-                userexists=true;
-                hashpas=rs.getString("pass");
+            if(Objects.equals(empid, rs.getInt("id"))){
+                emplid=true;
+                hashpas=rs.getString("password");
                 break;
             }
         }
-        if(!userexists){
-            System.out.println("Username does not exist");
+        if(!emplid){
+            System.out.println("Employee does not exist");
             con.close();
             return false;
         }
@@ -99,22 +99,22 @@ public class Auth {
         con.close();
         return true;
     }
-    public static boolean deleteuser(String userName,String pass) throws Exception{
+    public static boolean deleteuser(int empid,String pass) throws Exception{
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         Connection con=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Company","root","123456@mysql");
         PreparedStatement ps0=con.prepareStatement("select *from details");
         ResultSet rs= ps0.executeQuery();
-        boolean userexists=false;
+        boolean emplid=false;
         String hashpas = null;
         while (rs.next()){
-            if(Objects.equals(userName, rs.getString("username"))){
-                userexists=true;
-                hashpas=rs.getString("pass");
+            if(Objects.equals(empid, rs.getInt("id"))){
+                emplid=true;
+                hashpas=rs.getString("password");
                 break;
             }
         }
-        if(!userexists){
+        if(!emplid){
             System.out.println("Username does not exist");
             con.close();
             return false;
@@ -124,53 +124,55 @@ public class Auth {
             con.close();
             return false;
         }
-        PreparedStatement ps=con.prepareStatement("delete from details where username=? ");
+        PreparedStatement ps=con.prepareStatement("delete from details where id=? ");
         //ps.setString(2,Passwordhashing.hashPassword(pass));
-        ps.setString(1,userName);
+        ps.setInt(1,empid);
         int p=ps.executeUpdate();
         if(p>0){
-            System.out.println("User deleted Succesfully");
+            System.out.println("Employee deleted Succesfully");
         }
         else{
-            System.out.println("Incorrect Username or Password");
+            System.out.println("Incorrect Employee id or Password");
             return false;
         }
         con.close();
         return true;
     }
-    public static boolean forgotpassword(String userName,String pass) throws Exception{
+    public static boolean forgotpassword(int empid,String pass) throws Exception{
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         Connection con=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Company","root","123456@mysql");
-        PreparedStatement ps0=con.prepareStatement("select *from details");
+        PreparedStatement ps0=con.prepareStatement("select *from credentials");
         ResultSet rs= ps0.executeQuery();
         boolean userexists=false;
         while (rs.next()){
-            if(Objects.equals(userName, rs.getString("username"))){
+            if(Objects.equals(empid, rs.getInt("id"))){
                 userexists=true;
                 break;
             }
         }
         if(!userexists){
-            System.out.println("Username does not exist");
+            System.out.println("Employee does not exist");
             con.close();
             return false;
         }
-        PreparedStatement ps=con.prepareStatement("update details set pass= ? where username=?");
+        PreparedStatement ps=con.prepareStatement("update credentials set password= ? where id=?");
         ps.setString(1,Passwordhashing.hashPassword(pass));
-        ps.setString(2,userName);
+        ps.setInt(2,empid);
         int p=ps.executeUpdate();
         if(p>0){
             System.out.println("Password Updated Succesfully");
         }
         else{
             //Mostly it won't go here
-            System.out.println("Incorrect Username");
+            System.out.println("Incorrect Employee id");
             return false;
         }
         con.close();
         return true;
     }
+
+
     public static void main(String[] args) throws Exception{
         while(true) {
             Scanner myObj = new Scanner(System.in);  // Create a Scanner object
