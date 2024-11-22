@@ -1,4 +1,6 @@
 package db;
+import Java_Main.EmployeeData;
+import Java_Main.ProjectData;
 import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-public class Auth {
+public class AuthDb{
     public static class Passwordhashing{
         public static String hashPassword(String plainPassword) {
             // Generate salt and hash the password

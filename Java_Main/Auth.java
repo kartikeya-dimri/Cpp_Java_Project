@@ -1,4 +1,5 @@
 package Java_Main;
+import db.*;
 
 public class Auth{
     // will help to check username and password
