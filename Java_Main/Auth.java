@@ -1,24 +1,34 @@
 package Java_Main;
-import db.*;
+
+import db.AuthDb;
 
 public class Auth{
+    // check if anything is empty or not
+    private static boolean isLoginCorrect(String username, String password, String status){
+        return username==null || password==null || status==null || username.trim().isEmpty() || password.trim().isEmpty() || status.trim().isEmpty();
+    }
     // will help to check username and password
     //also forgot password later
     public static boolean login(String username, String password, String status){
         //status- ceo, emp, etc.
-        //don't have to do anything here, will directly pass this to database code
-
-
-        if(username.equals("admin") && password.equals("admin") && status.equals("ceo")){
-            return true;
+        if(!isLoginCorrect(username, password, status)){
+            System.out.println("Empty input");
+            return false;
         }
-        // now for hr
-        if(username.equals("hr") && password.equals("hr") && status.equals("hr")){
-            return true;
+        int userId;
+        try {
+            userId=Integer.parseInt(username);
+        } catch (NumberFormatException e) {
+            System.out.println("UserId entered is not a number");
+            return false;
         }
-        // now for employee
-        if(username.equals("emp") && password.equals("emp") && status.equals("emp")){
-            return true;
+
+        try{
+            // use signin method of db
+            return AuthDb.signin(userId, password, status);
+        }
+        catch(Exception e){
+            System.out.println("Error in signin");
         }
         return false;
     }
