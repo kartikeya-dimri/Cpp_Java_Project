@@ -1,4 +1,5 @@
 package Java_Main;
+
 import java.util.ArrayList;
 
 public class ProjectData {
@@ -9,6 +10,14 @@ public class ProjectData {
     private String name;
     private int numOfWorkingEmps;
     private ArrayList<EmployeeData> people;
+
+    public ProjectData(String status, String projID, String name, int numofemps, ArrayList<EmployeeData> people){
+        this.status = status;
+        this.projId = projID;
+        this.name = name;
+        this.numOfWorkingEmps = numofemps;
+        this.people = people;
+    }
 
     // Getter for status
     public String getStatus() {
