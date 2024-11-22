@@ -5,14 +5,47 @@ import java.util.ArrayList;
 
 public class WorkforceManager {
 
+    private static boolean isAddEmployeeInputCorrect(String status, String name, String fatherName, String dob, String salary, String address, String email, String phoneNum, String highestQual, ArrayList<String>skills){
+        if(status==null || name==null || fatherName==null || dob==null || salary==null || address==null || email==null || phoneNum==null || highestQual==null || skills==null){
+            return false;
+        }
+        if(status.trim().isEmpty() || name.trim().isEmpty() || fatherName.trim().isEmpty() || dob.trim().isEmpty() || salary.trim().isEmpty() || address.trim().isEmpty() || email.trim().isEmpty() || phoneNum.trim().isEmpty() || highestQual.trim().isEmpty()){
+            return false;
+        }   
+        if(phoneNum.length()!=10){
+            return false;
+        }
+
+        return true;
+    }
+
     public static ArrayList<String> add(String status, String name, String fatherName, String dob, String salary, String address, String email, String phoneNum, String highestQual, ArrayList<String>skills){
         //i'll need to check if the parameters are valid or not, like salary, address, email, phone number(10 digit)
         //return array-arr[0]-success/failure(1/0) and arr[1]-error message
         //if the parameters are valid then i'll pass it to database handling code. They'll need to automate the process of giving a new HrId 
         //as skills is a dropdown menu, it cant have errors
         ArrayList<String> result=new ArrayList<String>();
-        result.add("0");
-        result.add("Invalid parameters");
+        if(!isAddEmployeeInputCorrect(status, name, fatherName, dob, salary, address, email, phoneNum, highestQual, skills)){
+            // first is for failure second is the error message
+            result.add("0");
+            result.add("Invalid parameters");
+            return result;
+        }
+        result.add("1");
+        int Salary;
+        try {
+            Salary=Integer.parseInt(salary);
+        } catch (NumberFormatException e) {
+            result.add("Salary is not a number");
+            return result;
+        }
+
+        try {
+            AuthDb.addemp(status, name, dob, fatherName, email, skills, Salary, phoneNum, highestQual, address);
+        } catch (Exception e) {
+            result.add("Error in adding employee");
+            return result;
+        }
 
         return result; 
     }

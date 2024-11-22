@@ -1,6 +1,6 @@
 package Java_Main;
-import java.util.ArrayList;
 import db.*;
+import java.util.ArrayList;
 
 
 public class DisplayInfo {
@@ -10,20 +10,30 @@ public class DisplayInfo {
     public static ArrayList<String> ceoDashboardInfo(){
         //will call db code and get total ongoing proj, emps and hrs
         // 0->projects, 1->employees, 2->hrs
-        ArrayList<String> info=new ArrayList<>();//(no of ongoing proj, no of emps, no of hrs)
-        info.add("10");
-        info.add("50");
-        info.add("500");
-        return info;
+        // first get the integer arraylist
+        ArrayList<Integer> array=new ArrayList<>();
+        try {
+            array=AuthDb.work_force();
+        } catch (Exception e) {
+            System.out.println("Error in db");
+        }//(no of ongoing proj, no of emps, no of hrs)
+        ArrayList<String> ceoInfo=new ArrayList<>();
+
+        for(int i:array){
+            ceoInfo.add(Integer.toString(i));
+        }
+        return ceoInfo;
     }
 
     public static ArrayList<String> empDashboardInfo(String empId){
         //will call db code and get name, ID and total ongoing projects
         //empId passed will be always valid
         ArrayList<String> info=new ArrayList<>();//(name, ID and total ongoing projects)
-        info.add("Rahul Sharma");
-        info.add("EMP1");
-        info.add("5");
+        try {
+            info=AuthDb.empdash(empId);
+        } catch (Exception e) {
+            System.out.println("Error in DB");
+        }
         return info;
     }
     
@@ -31,9 +41,7 @@ public class DisplayInfo {
         //will call db code and get hr name, total employees, ongoign projects
         //hrId won't be passed, all hrs will have the same dashboard
         ArrayList<String> info = new ArrayList<>();
-        info.add("Deepak Yadav");
-        info.add("36");
-        info.add("5");
+        
         return info;
     }
     
