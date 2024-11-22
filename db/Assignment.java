@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.json.JSONArray;
 
-public class assignment {
+public class Assignment {
     public boolean addProj(String projName) {
         boolean isNewProject = false;
 

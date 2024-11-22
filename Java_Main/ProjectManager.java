@@ -118,6 +118,8 @@ public class ProjectManager {
     
 //will implement this later
     public static String assignProjects(String projectId, int numOfEmps, ArrayList<String> skills){
+        //no need to do error checking of the project id here, it'll always be valid and unassigned due to gui
+        
         //this will return if the assignment was successful or not
         //"OK","NEED MORE EMPS"
         
