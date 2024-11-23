@@ -1,6 +1,5 @@
 package db;
-import Java_Main.EmployeeData;
-import Java_Main.ProjectData;
+import Backend.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,7 +8,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.json.JSONArray;
 
-public class Assignment {
+public class assignment {
     public static boolean addProj(String projName) {
         boolean isNewProject = false;
 
@@ -60,14 +59,13 @@ public class Assignment {
             while (rs.next()) {
                 String emplistJson = rs.getString("emplist");
                 String projectstatus = rs.getString("status");
-                String projectid = rs.getString("id");
+                int projectid1 = rs.getInt("id");
                 String projectname = rs.getString("project_name");
-                int numOfEmp = Integer.parseInt(rs.getString("nume"));
+                int numOfEmp = rs.getInt("nume");
 
 
                 // Parse JSON into a list of integers
                 JSONArray jsonArray = new JSONArray(emplistJson);
-                ArrayList<Integer> employeeid = new ArrayList<>();
                 ArrayList<EmployeeData> employeeids = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String x = jsonArray.getString(i);
@@ -80,7 +78,8 @@ public class Assignment {
                         String name1 = rs1.getString("name");
                         String fatherName = rs.getString("Fathername");
                         String dob = rs1.getString("dob");
-                        String salary = rs1.getString("salary");
+                        int salary1 = rs1.getInt("salary");
+                        String salary=Integer.toString(salary1);
                         String address = rs1.getString("address");
                         String email = rs1.getString("email");
                         String phone = rs1.getString("phoneNumber");
@@ -95,6 +94,7 @@ public class Assignment {
                         employeeids.add(e);
                     }
                 }
+                String projectid=Integer.toString(projectid1);
                 ProjectData p = new ProjectData(projectstatus, projectid, projectname, numOfEmp, employeeids);
                 projects.add(p);
 
@@ -110,10 +110,10 @@ public class Assignment {
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush", "root", "ayushsql");
         System.out.println("Connection established");
-
+        int y=Integer.parseInt(projId);
         String checkQuery = "SELECT * FROM project WHERE id = ?";
         PreparedStatement checkStmt = con.prepareStatement(checkQuery);
-        checkStmt.setString(1, projId);
+        checkStmt.setInt(1, Integer.parseInt(projId));
         ResultSet rs = checkStmt.executeQuery();
 
         if (rs.next()) {
@@ -121,7 +121,7 @@ public class Assignment {
             String updateQuery = "UPDATE project SET status = ? WHERE id = ?";
             PreparedStatement updateStmt = con.prepareStatement(updateQuery);
             updateStmt.setString(1, "completed");
-            updateStmt.setString(2, projId);
+            updateStmt.setInt(2, y);
             int rowsUpdated = updateStmt.executeUpdate();
 
             if (rowsUpdated > 0) {
@@ -181,9 +181,10 @@ public class Assignment {
        Class.forName("com.mysql.cj.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush", "root", "ayushsql");
         System.out.println("Connection established");
+        int y=Integer.parseInt(projId);
         String checkQuery = "SELECT * FROM project WHERE id = ?";
         PreparedStatement checkStmt = con.prepareStatement(checkQuery);
-        checkStmt.setString(1, projId);
+        checkStmt.setInt(1, y);
         ResultSet rs = checkStmt.executeQuery();
         if (rs.next()) {
             isProject = true;
@@ -196,9 +197,10 @@ public class Assignment {
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush", "root", "ayushsql");
         System.out.println("Connection established");
+        int id=Integer.parseInt(projId);
         String checkQuery = "SELECT * FROM project WHERE id = ?";
         PreparedStatement checkStmt = con.prepareStatement(checkQuery);
-        checkStmt.setString(1, projId);
+        checkStmt.setInt(1, id);
         ResultSet rs = checkStmt.executeQuery();
         ArrayList<String> info =  new ArrayList<>();
         String name,status;
@@ -211,8 +213,73 @@ public class Assignment {
         return info;
 
     }
+    public static ArrayList<ProjectData> getEmployeeProjects( String empId) throws SQLException, ClassNotFoundException {
+        ArrayList<ProjectData> projects = new ArrayList<>();
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush", "root", "ayushsql");
+        System.out.println("Connection established");
+        int y=Integer.parseInt(empId);
+        String checkQuery = "SELECT * FROM details WHERE id = ?";
+        PreparedStatement checkStmt = con.prepareStatement(checkQuery);
+        checkStmt.setInt(1, y);
+        ResultSet rs = checkStmt.executeQuery();
+        if(rs.next()) {
+            String emplistJson = rs.getString("projectlist");
+            JSONArray jsonArray = new JSONArray(emplistJson);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                int projectId = jsonArray.getInt(i);
+                String query="SELECT * FROM project WHERE id = ?";
+                PreparedStatement queryStmt = con.prepareStatement(query);
+                queryStmt.setInt(1, projectId);
+                ResultSet rs1 = queryStmt.executeQuery();
+                if (rs1.next()) {
+                    String status = rs1.getString("status");
+                    String name = rs1.getString("project_name");
+                    int nume=rs1.getInt("nume");
+                    String id=Integer.toString(projectId);
+                    String emplistJson1 = rs.getString("emplist");
+                    JSONArray jsonArray1 = new JSONArray(emplistJson);
+                    ArrayList<EmployeeData> empList1 = new ArrayList<>();
+                    for (int j = 0; j < jsonArray1.length(); j++) {
+                        int employeeId = jsonArray1.getInt(j);
+                        String fetchQuery = "SELECT details FROM employee WHERE employee_id = ?";
+                        PreparedStatement fetchStmt = con.prepareStatement(fetchQuery);
+                        fetchStmt.setInt(1, employeeId);
+                        ResultSet rs2 = fetchStmt.executeQuery();
+                        if (rs2.next()) {
+                            String name1 = rs1.getString("name");
+                            String fatherName = rs.getString("Fathername");
+                            String dob = rs1.getString("dob");
+                            int salary1 = rs1.getInt("salary");
+                            String salary=Integer.toString(salary1);
+                            String address = rs1.getString("address");
+                            String email = rs1.getString("email");
+                            String phone = rs1.getString("phoneNumber");
+                            String highestQualification = rs1.getString("HighestQual");
+                            String skillsJson = rs1.getString("skills");
+                            ArrayList<String> skills = new ArrayList<>();
+                            JSONArray skillsArray = new JSONArray(skillsJson);
+                            for (int k = 0; k < skillsArray.length(); k++) {
+                                skills.add(skillsArray.getString(k));
+                            }
+                            EmployeeData e = new EmployeeData(name1, id, fatherName, dob, salary, address, email, phone, highestQualification, skills);
+                            empList1.add(e);
+
+                        }
+
+                    }
+                    ProjectData p=new ProjectData(status,id,name,nume,empList1);
+                    projects.add(p);
+
+                }
+            }
+           
+        }
+        return projects;
+
+
+    }
 
 
 
 }
-
