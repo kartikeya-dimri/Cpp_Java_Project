@@ -19,6 +19,7 @@ public class WorkforceManager {
         return true;
     }
 
+    // THIS IS ADD EMPLOYEE
     public static ArrayList<String> add(String status, String name, String fatherName, String dob, String salary, String address, String email, String phoneNum, String highestQual, ArrayList<String>skills){
         //i'll need to check if the parameters are valid or not, like salary, address, email, phone number(10 digit)
         //return array-arr[0]-success/failure(1/0) and arr[1]-error message
@@ -65,22 +66,28 @@ public class WorkforceManager {
         // result.add("Invalid parameters");
         // first for success
         // if correct id then return name phone email
-        result.add("1");
-        result.add("Rahul Sharma");
-        result.add("9999662255");
-        result.add("harsh@gmain.com");
+        try {
+            result=AuthDb.searchfordelete(status, Id);
+        } catch (Exception e) {
+            result.add("0");
+            result.add("Error in searching for employee (Exception thrown)");
+            return result;
+        }
 
         
         return result; 
     }
     
+    // THIS TAKES CARE OF FIRING THE HR AND THE EMPLOYEE
     public static void delete(String status, String Id){
         //call Db to remove it. it's confirmed that hr exists
-        System.out.println("HR removed successfully");
+        try {
+            AuthDb.deleteEmp(status, Id);
+        } catch (Exception e) {
+            System.out.println("Error in deleting employee");
+        }
+        
     }
-    
-
-    
 
     //ceo.logout() - i think it can be implemented in the gui itself - Done in GUI
 }
