@@ -45,16 +45,30 @@ public class ProjectManager {
         return new ArrayList<ProjectData>();
     }
     
-//will implement this later
-    public static String assignProjects(String projectId, int numOfEmps, ArrayList<String> skills){
+    public static String assignProjects(String projectId, int numOfEmpsRequired, ArrayList<String> skills){
         //no need to do error checking of the project id here, it'll always be valid and unassigned due to gui
         
-        //this will return if the assignment was successful or not
-        //"OK","NEED MORE EMPS"
+        // vector<string> assignProjects(int requiredNumber, vector<string>skills, vector<Employee>employees)
+
+        ArrayList<EmployeeSkillData> totalEmps;//dbTeam: make a methods which will return the details of all teh employees in this form
+        //then jni call will happen
+        ArrayList<String>result=//jni call to cpp
         
-        // inernally update status also unassigned -> ongoing
-        String res = "Not enough employess with C++ Skill";
-        return res;
+        if(result.get(0).equals("1")){
+            //assignment was successful
+            //now need to call db again to modify employee and project details
+            //i'll pass db the project id and an array of emp ids to which the assignment has happened
+            //the project needs to converted to assigned-along with the details of employees updated
+            ArrayList<String>assignedEmps;
+            dbCallAssignProjects(projectId,assignedEmps );
+
+            return "1";
+        }
+        else{
+            //return the error message
+            return result.get(1);//has info about how many more people are required with the required skills
+        }
+    
     }
 
 
