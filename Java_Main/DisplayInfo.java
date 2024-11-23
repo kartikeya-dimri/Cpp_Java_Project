@@ -46,6 +46,7 @@ public class DisplayInfo {
     }
     
     // changing the signature and adding a status for differentiating between hr and employee.
+    // call getempdetail method from db
     public static EmployeeData DashboardDetailsPrint(String status,String empId){
         //empId passed will be always valid
         //will pass it to db code
@@ -58,6 +59,7 @@ public class DisplayInfo {
         skills.add("Skill3");
         EmployeeData e= new EmployeeData("Rahul Sharma", empId, "GP Sharma", "15-06-2000", "20000", "Bangalore", "Rahul.Sharma@gmail.com", "9999662255", "Btech", skills);
         //need to get all the fields
+        // THESE ARE THE INDICES
         // index of name is 0, id is 1, father_name is 2, dob is 3, salary is 4, address is 5, email is 6, phone is 7, highest_qualification is 8, skills is 9
         return e;
     }
