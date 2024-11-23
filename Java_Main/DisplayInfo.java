@@ -41,7 +41,12 @@ public class DisplayInfo {
         //will call db code and get hr name, total employees, ongoign projects
         //hrId won't be passed, all hrs will have the same dashboard
         ArrayList<String> info = new ArrayList<>();
-        
+
+        try {
+            info=AuthDb.hrdashboard(hrId);
+        } catch (Exception e) {
+            System.out.println("Error in DB");
+        }
         return info;
     }
     
@@ -54,13 +59,29 @@ public class DisplayInfo {
         
         // name id father_name dob salary address email phone highest_qualification skills
         ArrayList<String> skills = new ArrayList<>();
-        skills.add("Skill1");
-        skills.add("Skill2");
-        skills.add("Skill3");
-        EmployeeData e= new EmployeeData("Rahul Sharma", empId, "GP Sharma", "15-06-2000", "20000", "Bangalore", "Rahul.Sharma@gmail.com", "9999662255", "Btech", skills);
         //need to get all the fields
         // THESE ARE THE INDICES
         // index of name is 0, id is 1, father_name is 2, dob is 3, salary is 4, address is 5, email is 6, phone is 7, highest_qualification is 8, skills is 9
-        return e;
+
+        ArrayList<String> empdetails = new ArrayList<>();
+        // calling the db methods
+        try {
+            empdetails=AuthDb.getempdetail(empId);
+        } catch (Exception e) {
+            System.out.println("Error in DB");
+        }
+
+        // now we have the skills arraylist
+        try {
+            skills=AuthDb.getempskills(empId);
+        } catch (Exception e) {
+            System.out.println("Error in DB");
+        }
+
+        // now we have all the data
+        EmployeeData empData = new EmployeeData(empdetails.get(0), empdetails.get(1), empdetails.get(2), empdetails.get(3), empdetails.get(4), empdetails.get(5), empdetails.get(6), empdetails.get(7), empdetails.get(8), skills);
+
+        return empData;
+        
     }
 }
