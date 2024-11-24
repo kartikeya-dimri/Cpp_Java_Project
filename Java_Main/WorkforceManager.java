@@ -42,7 +42,7 @@ public class WorkforceManager {
         }
 
         try {
-            AuthDb.addemp(status, name, dob, fatherName, email, skills, Salary, phoneNum, highestQual, address);
+            result.add(AuthDb.addemp(status, name, dob, fatherName, email, skills, Salary, phoneNum, highestQual, address));
         } catch (Exception e) {
             result.add("Error in adding employee");
             return result;
