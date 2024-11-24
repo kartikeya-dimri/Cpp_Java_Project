@@ -1,5 +1,5 @@
 package db;
-import Backend.*;
+import Java_Main.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,14 +8,20 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.json.JSONArray;
 
-public class Assignment {
-    public static boolean addProj(String projName) {
-        boolean isNewProject = false;
 
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush", "root", "ayushsql");
-            System.out.println("Connection established");
+public class Assignment {
+
+    public static boolean addProj(String projName)throws SQLException, ClassNotFoundException  {
+        boolean isNewProject = false;
+        Class.forName("com.mysql.jdbc.Driver");
+        System.out.println("Driver loaded");
+        Connection con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush","root","ayushsql");
+        System.out.println("Connection established");
+        String query="create table if not exists project(id auto_increment int primary key ,project_name varchar(100) not null,nume int DEFAULT 0,emplist JSON, status varchar(75) DEFAULT 'Unassigned');";
+        PreparedStatement ps=con.prepareStatement(query);
+        ps.executeUpdate();
+        System.out.println("Table created");
+
 
             // Check if project with this name already exists
             String checkQuery = "SELECT * FROM project WHERE project_name = ?";
@@ -40,9 +46,7 @@ public class Assignment {
             rs.close();
             checkStmt.close();
             con.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         return isNewProject;
     }
     public static ArrayList<ProjectData> getProjects(String statusType) throws SQLException, ClassNotFoundException {
@@ -120,7 +124,7 @@ public class Assignment {
             // Update project status to 'completed'
             String updateQuery = "UPDATE project SET status = ? WHERE id = ?";
             PreparedStatement updateStmt = con.prepareStatement(updateQuery);
-            updateStmt.setString(1, "completed");
+            updateStmt.setString(1, "Completed");
             updateStmt.setInt(2, y);
             int rowsUpdated = updateStmt.executeUpdate();
 
@@ -134,7 +138,7 @@ public class Assignment {
                     int employeeId = jsonArray.getInt(i);
 
                     // Fetch projectlist column of the employee
-                    String fetchQuery = "SELECT projectlist FROM employee WHERE employee_id = ?";
+                    String fetchQuery = "SELECT projectlist FROM details WHERE employee_id = ?";
                     PreparedStatement fetchStmt = con.prepareStatement(fetchQuery);
                     fetchStmt.setInt(1, employeeId);
                     ResultSet rs1 = fetchStmt.executeQuery();
@@ -150,9 +154,18 @@ public class Assignment {
                                 updatedProjectList.put(projectListArray.getString(j));
                             }
                         }
+                        int pcwo=rs1.getInt("pcwo");
+                        int upcwo=pcwo-1;
+                        String update="UPDATE details set pcwo = ? WHERE id = ?";
+                        PreparedStatement updateStmt2 = con.prepareStatement(update);
+                        updateStmt2.setInt(1, upcwo);
+                        updateStmt2.setInt(2, employeeId);
+                        int rowsUpdated2 = updateStmt2.executeUpdate();
+
+
 
                         // Update the projectlist column with the modified JSON
-                        String updateEmployeeQuery = "UPDATE employee SET projectlist = ? WHERE employee_id = ?";
+                        String updateEmployeeQuery = "UPDATE details SET projectlist = ? WHERE employee_id = ?";
                         PreparedStatement updateEmployeeStmt = con.prepareStatement(updateEmployeeQuery);
                         updateEmployeeStmt.setString(1, updatedProjectList.toString()); // Convert JSON array to string
                         updateEmployeeStmt.setInt(2, employeeId);
@@ -273,13 +286,77 @@ public class Assignment {
 
                 }
             }
-           
+
         }
         return projects;
 
 
     }
+    public static void dbCallAssignProjects(String projectid,ArrayList<String> employees,int nume) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush", "root", "ayushsql");
+        System.out.println("Connection established");
+        int y = Integer.parseInt(projectid);
+        String checkQuery = "SELECT * FROM project WHERE id = ?";
+        PreparedStatement checkStmt = con.prepareStatement(checkQuery);
+        checkStmt.setInt(1, y);
+        ResultSet rs = checkStmt.executeQuery();
+
+        if (rs.next()) {
+            JSONArray employeeJsonArray = new JSONArray(employees);
+
+
+            String updateQuery = "UPDATE project SET nume = ?, emplist = ? status =? WHERE id = ?";
+            PreparedStatement updateStmt = con.prepareStatement(updateQuery);
+            updateStmt.setInt(1, nume); // Update nume
+            updateStmt.setString(2, employeeJsonArray.toString());
+            updateStmt.setString(3, "Ongoing");
+            updateStmt.setInt(4, y);
+            updateStmt.executeUpdate();
+        }
+
+        for(int i=0;i<employees.size();i++){
+            int eid=Integer.parseInt(employees.get(i));
+            String query="SELECT * FROM details WHERE id = ?";
+            PreparedStatement queryStmt = con.prepareStatement(query);
+            queryStmt.setInt(1, eid);
+            ResultSet rs1= queryStmt.executeQuery();
+            if(rs1.next()) {
+                int pcwo=rs.getInt("pcwo");
+                int upcwo=pcwo+1;
+                String query1="UPDATE details SET pcwo = ? WHERE id = ?";
+                PreparedStatement query1Stmt = con.prepareStatement(query1);
+                query1Stmt.setInt(1, upcwo);
+                query1Stmt.setInt(2, eid);
+                query1Stmt.executeUpdate();
+                String projectListJson = rs1.getString("projectlist");
+                JSONArray projectListArray;
+
+                if (projectListJson == null || projectListJson.isEmpty()) {
+                    projectListArray = new JSONArray();
+                } else {
+                    projectListArray = new JSONArray(projectListJson);
+                }
+
+                projectListArray.put(projectid);
+
+                // Step 5: Update the project_list column
+                String updateProjectListQuery = "UPDATE details SET projectlist = ? WHERE id = ?";
+                PreparedStatement updateProjectListStmt = con.prepareStatement(updateProjectListQuery);
+                updateProjectListStmt.setString(1, projectListArray.toString());
+                updateProjectListStmt.setInt(2, eid);
+                updateProjectListStmt.executeUpdate();
+
+
+            }
+
+        }
+    }
+
+
+    
 
 
 
 }
+

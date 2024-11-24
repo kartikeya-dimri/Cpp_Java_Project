@@ -9,8 +9,14 @@ public class ProjectManager {
         //will call db code to check if a proj with exact same name already exists or not
         //if it's new proj name, then it'll be added to db as a new assigned project
         // if successfully added- will return true, else false\
-        if (!Assignment.addProj(projName)) {
-            return false;
+        try{
+            if (!Assignment.addProj(projName)) {
+                return false;
+            }
+
+        }
+        catch(Exception e){
+            System.out.println("addProj db exception");
         }
         return true;
         // return false;
@@ -40,19 +46,44 @@ public class ProjectManager {
         }
         return new ArrayList<ProjectData>();
     }
-
-//will implement this later
-    public static String assignProjects(String projectId, int numOfEmps, ArrayList<String> skills) {
+    
+    public static String assignProjects(String projectId, int numOfEmpsRequired, ArrayList<String> skills){
         //no need to do error checking of the project id here, it'll always be valid and unassigned due to gui
+        
+        // vector<string> assignProjects(int requiredNumber, vector<string>skills, vector<Employee>employees)
+        try{
 
-        //this will return if the assignment was successful or not
-        //"OK","NEED MORE EMPS"
-        // inernally update status also unassigned -> ongoing
-        String res = "Not enough employess with C++ Skill";
-        return res;
+            ArrayList<EmployeeSkillData> totalEmps=AuthDb.getallskills();//dbTeam: make a methods which will return the details of all teh employees in this form
+        }catch(Exception e){
+            System.out.println("cant get all emp details");
+        }
+        //then jni call will happen
+        ArrayList<String>result=new ArrayList<>();//jni call to cpp
+        
+        if(result.get(0).equals("1")){
+            //assignment was successful
+            //now need to call db again to modify employee and project details
+            //i'll pass db the project id and an array of emp ids to which the assignment has happened
+            //the project needs to converted to assigned-along with the details of employees updated
+            result.remove(0);
+            try {
+
+                Assignment.dbCallAssignProjects(projectId,result, numOfEmpsRequired);
+                ArrayList<String>assignedEmps;
+            } catch (Exception e) {
+                System.out.println("AssignProject db exception");
+            }
+            return "1";
+        }
+        else{
+            //return the error message
+            return result.get(1);//has info about how many more people are required with the required skills
+        }
+    
     }
 
-    public static void completeProject(String projId) {
+
+    public static void completeProject(String projId){
         //projId will always be valid
         //will pass on to db code
         //also free up the employees// free employee

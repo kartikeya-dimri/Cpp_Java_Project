@@ -2,14 +2,10 @@
 using namespace std;
 
 struct Employee{
-    string name;
-    string age;
     string id;
     // Faster comparison of available employees
     int noOfProjects;
-    vector<string> assignedProjects;
     vector<string> skills;
-    string hired_status;
 };
 
 bool sortEmployeesForAssign(Employee* & a, Employee* & b){
