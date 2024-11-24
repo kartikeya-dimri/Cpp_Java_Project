@@ -1,5 +1,5 @@
 package db;
-import Backend.*;
+import Java_Main.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.json.JSONArray;
 
 
-public class assignment {
+public class Assignment {
 
     public static boolean addProj(String projName)throws SQLException, ClassNotFoundException  {
         boolean isNewProject = false;
