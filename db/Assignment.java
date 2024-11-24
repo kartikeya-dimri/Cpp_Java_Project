@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.json.JSONArray;
 
 
-public class Assignment {
+public class assignment {
 
     public static boolean addProj(String projName)throws SQLException, ClassNotFoundException  {
         boolean isNewProject = false;
@@ -17,7 +17,7 @@ public class Assignment {
         System.out.println("Driver loaded");
         Connection con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush","root","ayushsql");
         System.out.println("Connection established");
-        String query="create table if not exists project(id auto_increment int primary key ,project_name varchar(100) not null,nume int DEFAULT 0,emplist JSON, status varchar(75) DEFAULT 'unassigned');";
+        String query="create table if not exists project(id auto_increment int primary key ,project_name varchar(100) not null,nume int DEFAULT 0,emplist JSON, status varchar(75) DEFAULT 'Unassigned');";
         PreparedStatement ps=con.prepareStatement(query);
         ps.executeUpdate();
         System.out.println("Table created");
@@ -124,7 +124,7 @@ public class Assignment {
             // Update project status to 'completed'
             String updateQuery = "UPDATE project SET status = ? WHERE id = ?";
             PreparedStatement updateStmt = con.prepareStatement(updateQuery);
-            updateStmt.setString(1, "completed");
+            updateStmt.setString(1, "Completed");
             updateStmt.setInt(2, y);
             int rowsUpdated = updateStmt.executeUpdate();
 
@@ -306,11 +306,12 @@ public class Assignment {
             JSONArray employeeJsonArray = new JSONArray(employees);
 
 
-            String updateQuery = "UPDATE project SET nume = ?, emplist = ? WHERE id = ?";
+            String updateQuery = "UPDATE project SET nume = ?, emplist = ? status =? WHERE id = ?";
             PreparedStatement updateStmt = con.prepareStatement(updateQuery);
             updateStmt.setInt(1, nume); // Update nume
             updateStmt.setString(2, employeeJsonArray.toString());
-            updateStmt.setInt(3, y);
+            updateStmt.setString(3, "Ongoing");
+            updateStmt.setInt(4, y);
             updateStmt.executeUpdate();
         }
 
@@ -358,3 +359,4 @@ public class Assignment {
 
 
 }
+
