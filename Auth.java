@@ -303,7 +303,7 @@ public class Auth {
         ResultSet rs= ps0.executeQuery();
         ArrayList<EmployeeSkillData> f=new ArrayList<>(EmployeeSkillData);
         while(rs.next()){
-            if(rs.getString("position").equals("EMP")){
+            if(rs.getString("position").equals("EMP") && rs.getBoolean("Employed")){
                 EmployeeSkillData e=new EmployeeSkillData(String.valueOf(rs.getInt("id")),getempskills(String.valueOf(rs.getInt("id"))),rs.getInt("pcwo"));
                 f.add(e);
             }
