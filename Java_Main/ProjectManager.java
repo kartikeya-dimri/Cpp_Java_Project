@@ -51,14 +51,14 @@ public class ProjectManager {
         //no need to do error checking of the project id here, it'll always be valid and unassigned due to gui
         
         // vector<string> assignProjects(int requiredNumber, vector<string>skills, vector<Employee>employees)
+        ArrayList<EmployeeSkillData> totalEmps=new ArrayList<>();
         try{
-
-            ArrayList<EmployeeSkillData> totalEmps=AuthDb.getallskills();//dbTeam: make a methods which will return the details of all teh employees in this form
+            totalEmps=AuthDb.getallskills();//dbTeam: make a methods which will return the details of all teh employees in this form
         }catch(Exception e){
-            System.out.println("cant get all emp details");
+            System.out.println("cant get all emp details from db");
         }
         //then jni call will happen
-        ArrayList<String>result=new ArrayList<>();//jni call to cpp
+        ArrayList<String>result=AssignProjectsJNI.assignProjects(numOfEmpsRequired, skills, totalEmps);//jni call to cpp
         
         if(result.get(0).equals("1")){
             //assignment was successful
@@ -69,7 +69,7 @@ public class ProjectManager {
             try {
 
                 Assignment.dbCallAssignProjects(projectId,result, numOfEmpsRequired);
-                ArrayList<String>assignedEmps;
+                // ArrayList<String>assignedEmps;
             } catch (Exception e) {
                 System.out.println("AssignProject db exception");
             }

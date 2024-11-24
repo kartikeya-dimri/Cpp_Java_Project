@@ -1,120 +1,84 @@
 #include <jni.h>
-#include<bits/stdc++.h>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-// Employee struct to match the Java-side structure
+// Struct to represent Employee
 struct Employee {
-    string name;
     string id;
     int noOfProjects;
     vector<string> skills;
 };
 
+// Comparator for sorting employees
 bool sortEmployeesForAssign(Employee* &a, Employee* &b) {
     return a->noOfProjects < b->noOfProjects;
 }
 
-// JNI method definition without generated header
-extern "C" JNIEXPORT jobjectArray JNICALL Java_com_example_ProjectAssignment_assignProjects(
-    JNIEnv* env, jobject obj, jint requiredNumber, jobjectArray skillsArray, jobjectArray employeesArray) {
-    
-    // Convert Java arrays to C++ vectors
-    vector<string> skills;
-    vector<Employee> employees;
-    int maxNoOfProjects = 5;
-
-    // Convert skills array
-    jsize skillsLength = env->GetArrayLength(skillsArray);
-    for (int i = 0; i < skillsLength; i++) {
-        jstring str = (jstring)env->GetObjectArrayElement(skillsArray, i);
-        const char* skillStr = env->GetStringUTFChars(str, nullptr);
-        skills.push_back(string(skillStr));
-        env->ReleaseStringUTFChars(str, skillStr);
-        env->DeleteLocalRef(str);
-    }
-
-    // Convert employees array
-    jsize empLength = env->GetArrayLength(employeesArray);
-    for (int i = 0; i < empLength; i++) {
-        jobject empObj = env->GetObjectArrayElement(employeesArray, i);
+extern "C" {
+    JNIEXPORT jobject JNICALL Java_Java_1Main_AssignProjects_assignProjects(
+        JNIEnv* env, jclass clazz, jint requiredNumber, jobject skillsList, jobject employeesList) {
         
-        // Get Employee class and field IDs
-        jclass empClass = env->GetObjectClass(empObj);
-        jfieldID idField = env->GetFieldID(empClass, "id", "Ljava/lang/String;");
-        jfieldID noOfProjectsField = env->GetFieldID(empClass, "noOfProjects", "I");
-        jfieldID skillsField = env->GetFieldID(empClass, "skills", "[Ljava/lang/String;");
-
-        // Get employee data
-        jstring idStr = (jstring)env->GetObjectField(empObj, idField);
-        jint noOfProjects = env->GetIntField(empObj, noOfProjectsField);
-        jobjectArray empSkills = (jobjectArray)env->GetObjectField(empObj, skillsField);
-
-        Employee emp;
-        const char* idChars = env->GetStringUTFChars(idStr, nullptr);
-        emp.id = string(idChars);
-        emp.noOfProjects = noOfProjects;
-
-        // Get employee skills
-        jsize skillsLen = env->GetArrayLength(empSkills);
-        for (int j = 0; j < skillsLen; j++) {
-            jstring skillStr = (jstring)env->GetObjectArrayElement(empSkills, j);
-            const char* skill = env->GetStringUTFChars(skillStr, nullptr);
-            emp.skills.push_back(string(skill));
-            env->ReleaseStringUTFChars(skillStr, skill);
-            env->DeleteLocalRef(skillStr);
+        // Convert Java ArrayList<String> (skills) to C++ vector<string>
+        jclass arrayListClass = env->GetObjectClass(skillsList);
+        jmethodID sizeMethod = env->GetMethodID(arrayListClass, "size", "()I");
+        jmethodID getMethod = env->GetMethodID(arrayListClass, "get", "(I)Ljava/lang/Object;");
+        
+        jint skillsSize = env->CallIntMethod(skillsList, sizeMethod);
+        vector<string> skills;
+        for (int i = 0; i < skillsSize; i++) {
+            jstring skill = (jstring)env->CallObjectMethod(skillsList, getMethod, i);
+            const char* skillChars = env->GetStringUTFChars(skill, NULL);
+            skills.push_back(string(skillChars));
+            env->ReleaseStringUTFChars(skill, skillChars);
         }
 
-        employees.push_back(emp);
-        env->ReleaseStringUTFChars(idStr, idChars);
-        env->DeleteLocalRef(idStr);
-        env->DeleteLocalRef(empSkills);
-        env->DeleteLocalRef(empObj);
-    }
+        // Convert Java ArrayList<EmployeeSkillData> to C++ vector<Employee>
+        jint employeesSize = env->CallIntMethod(employeesList, sizeMethod);
+        vector<Employee> employees;
+        jclass employeeClass = env->FindClass("Java_Main/EmployeeSkillData");
+        jmethodID getIdMethod = env->GetMethodID(employeeClass, "getId", "()Ljava/lang/String;");
+        jmethodID getSkillsMethod = env->GetMethodID(employeeClass, "getSkills", "()Ljava/util/ArrayList;");
+        jmethodID getNoOfProjectsMethod = env->GetMethodID(employeeClass, "getNoOfProjects", "()I");
 
-    // Find available employees
-    vector<Employee*> availableEmployees;
-    for (auto& employee : employees) {
-        bool hasAllSkills = true;
-        for (const auto& skill : skills) {
-            if (find(employee.skills.begin(), employee.skills.end(), skill) == employee.skills.end()) {
-                hasAllSkills = false;
-                break;
+        for (int i = 0; i < employeesSize; i++) {
+            jobject employeeObj = env->CallObjectMethod(employeesList, getMethod, i);
+            
+            // Extract Employee fields
+            jstring id = (jstring)env->CallObjectMethod(employeeObj, getIdMethod);
+            const char* idChars = env->GetStringUTFChars(id, NULL);
+            string empId(idChars);
+            env->ReleaseStringUTFChars(id, idChars);
+
+            jint noOfProjects = env->CallIntMethod(employeeObj, getNoOfProjectsMethod);
+
+            jobject employeeSkillsList = env->CallObjectMethod(employeeObj, getSkillsMethod);
+            jint empSkillsSize = env->CallIntMethod(employeeSkillsList, sizeMethod);
+            vector<string> empSkills;
+            for (int j = 0; j < empSkillsSize; j++) {
+                jstring skill = (jstring)env->CallObjectMethod(employeeSkillsList, getMethod, j);
+                const char* skillChars = env->GetStringUTFChars(skill, NULL);
+                empSkills.push_back(string(skillChars));
+                env->ReleaseStringUTFChars(skill, skillChars);
             }
+
+            employees.push_back(Employee{empId, (int)noOfProjects, empSkills});
         }
-        if (hasAllSkills && employee.noOfProjects < maxNoOfProjects) {
-            availableEmployees.push_back(&employee);
+
+        // Call the assignProjects logic
+        vector<string> result = assignProjects((int)requiredNumber, skills, employees);
+
+        // Convert the result vector<string> to Java ArrayList<String>
+        jclass arrayListClassResult = env->FindClass("java/util/ArrayList");
+        jmethodID arrayListInit = env->GetMethodID(arrayListClassResult, "<init>", "()V");
+        jmethodID arrayListAdd = env->GetMethodID(arrayListClassResult, "add", "(Ljava/lang/Object;)Z");
+        
+        jobject resultList = env->NewObject(arrayListClassResult, arrayListInit);
+        for (const string& res : result) {
+            jstring resStr = env->NewStringUTF(res.c_str());
+            env->CallBooleanMethod(resultList, arrayListAdd, resStr);
+            env->DeleteLocalRef(resStr);
         }
+
+        return resultList;
     }
-
-    // Create result array
-    vector<string> result;
-    if (availableEmployees.size() >= requiredNumber) {
-        result.push_back("1");
-        sort(availableEmployees.begin(), availableEmployees.end(), sortEmployeesForAssign);
-        for (int i = 0; i < requiredNumber; i++) {
-            result.push_back(availableEmployees[i]->id);
-        }
-    } else {
-        result.push_back("0");
-        int need = requiredNumber - availableEmployees.size();
-        string message = "Need to hire " + to_string(need) + " more employees for completing this project.\n";
-        message += "Please add " + to_string(need) + " more employees with these skills\n";
-        for (size_t i = 1; i <= skills.size(); i++) {
-            message += to_string(i) + ". " + skills[i-1] + "\n";
-        }
-        result.push_back(message);
-    }
-
-    // Convert result to Java String array
-    jobjectArray resultArray = env->NewObjectArray(result.size(), 
-        env->FindClass("java/lang/String"), 
-        env->NewStringUTF(""));
-
-    for (size_t i = 0; i < result.size(); i++) {
-        env->SetObjectArrayElement(resultArray, i, 
-            env->NewStringUTF(result[i].c_str()));
-    }
-
-    return resultArray;
 }
