@@ -297,4 +297,18 @@ public class Auth {
         ps0.setInt(2,Integer.parseInt(Id));
         ps0.executeUpdate();
     }
+    public static ArrayList<EmployeeSkillData> getallskills() throws SQLException, ClassNotFoundException {
+        Connection con=establishConnection();
+        PreparedStatement ps0=con.prepareStatement("select * from details");
+        ResultSet rs= ps0.executeQuery();
+        ArrayList<EmployeeSkillData> f=new ArrayList<>(EmployeeSkillData);
+        while(rs.next()){
+            if(rs.getString("position").equals("EMP")){
+                EmployeeSkillData e=new EmployeeSkillData(String.valueOf(rs.getInt("id")),getempskills(String.valueOf(rs.getInt("id"))),rs.getInt("pcwo"));
+                f.add(e);
+            }
+
+        }
+        return f;
+    }
 }
