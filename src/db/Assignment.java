@@ -10,21 +10,33 @@ import org.json.JSONArray;
 
 
 public class Assignment {
-
-    public static boolean addProj(String projName)throws SQLException, ClassNotFoundException  {
-        boolean isNewProject = false;
+    public static Connection establish() throws SQLException, ClassNotFoundException{
         Class.forName("com.mysql.jdbc.Driver");
         System.out.println("Driver loaded");
-        Connection con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush","root","ayushsql");
+        Connection con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/company","root","dimriKartik126");
         System.out.println("Connection established");
-        String query="create table if not exists project(id auto_increment int primary key ,project_name varchar(100) not null,nume int DEFAULT 0,emplist JSON, status varchar(75) DEFAULT 'Unassigned');";
+        return con;
+    }
+    public static int numberOfProject() throws SQLException, ClassNotFoundException {
+        int count=0;
+        Connection con=establish();
+        String query="SELECT *FROM project;";
         PreparedStatement ps=con.prepareStatement(query);
-        ps.executeUpdate();
-        System.out.println("Table created");
+       ResultSet rs= ps.executeQuery();
+       while(rs.next()){
+        count++;
+       }
+       return count;
+        
+
+    }
+    public static boolean addProj(String projName)throws SQLException, ClassNotFoundException  {
+        boolean isNewProject = false;
+        Connection con=establish();
 
 
             // Check if project with this name already exists
-            String checkQuery = "SELECT * FROM project WHERE project_name = ?";
+            String checkQuery = "SELECT * FROM project WHERE project_name = ?;";
             PreparedStatement checkStmt = con.prepareStatement(checkQuery);
             checkStmt.setString(1, projName);
             ResultSet rs = checkStmt.executeQuery();
@@ -32,7 +44,7 @@ public class Assignment {
             if (!rs.next()) {
                 // No project with this name found, so it's a new project
                 System.out.println("Project name is new, adding to database.");
-                String query2 = "insert into project(project_name) values(?)";
+                String query2 = "insert into project(project_name) values(?);";
                 PreparedStatement ps1 = con.prepareStatement(query2);
                 ps1.setString(1, projName);
                 ps1.executeUpdate();
@@ -51,10 +63,8 @@ public class Assignment {
     }
     public static ArrayList<ProjectData> getProjects(String statusType) throws SQLException, ClassNotFoundException {
 
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush", "root", "ayushsql");
-            System.out.println("Connection established");
-            String checkQuery = "SELECT * FROM project WHERE project_status = ?";
+        Connection con=establish();
+            String checkQuery = "SELECT * FROM project WHERE status = ?;";
             PreparedStatement checkStmt = con.prepareStatement(checkQuery);
             checkStmt.setString(1, statusType);
             ResultSet rs = checkStmt.executeQuery();
@@ -73,7 +83,7 @@ public class Assignment {
                 ArrayList<EmployeeData> employeeids = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     String x = jsonArray.getString(i);
-                    String query = "Select * from details where employee_id = ?";
+                    String query = "Select * from details where employee_id = ?;";
                     PreparedStatement ps1 = con.prepareStatement(query);
                     int y = Integer.parseInt(x);
                     ps1.setInt(1, y);
@@ -111,18 +121,16 @@ public class Assignment {
 
     }
     public static void completeProject(String projId) throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush", "root", "ayushsql");
-        System.out.println("Connection established");
+        Connection con=establish();
         int y=Integer.parseInt(projId);
-        String checkQuery = "SELECT * FROM project WHERE id = ?";
+        String checkQuery = "SELECT * FROM project WHERE id = ?;";
         PreparedStatement checkStmt = con.prepareStatement(checkQuery);
         checkStmt.setInt(1, Integer.parseInt(projId));
         ResultSet rs = checkStmt.executeQuery();
 
         if (rs.next()) {
             // Update project status to 'completed'
-            String updateQuery = "UPDATE project SET status = ? WHERE id = ?";
+            String updateQuery = "UPDATE project SET status = ? WHERE id = ?;";
             PreparedStatement updateStmt = con.prepareStatement(updateQuery);
             updateStmt.setString(1, "Completed");
             updateStmt.setInt(2, y);
@@ -138,7 +146,7 @@ public class Assignment {
                     int employeeId = jsonArray.getInt(i);
 
                     // Fetch projectlist column of the employee
-                    String fetchQuery = "SELECT projectlist FROM details WHERE employee_id = ?";
+                    String fetchQuery = "SELECT projectlist FROM details WHERE employee_id = ?;";
                     PreparedStatement fetchStmt = con.prepareStatement(fetchQuery);
                     fetchStmt.setInt(1, employeeId);
                     ResultSet rs1 = fetchStmt.executeQuery();
@@ -156,7 +164,7 @@ public class Assignment {
                         }
                         int pcwo=rs1.getInt("pcwo");
                         int upcwo=pcwo-1;
-                        String update="UPDATE details set pcwo = ? WHERE id = ?";
+                        String update="UPDATE details set pcwo = ? WHERE id = ?;";
                         PreparedStatement updateStmt2 = con.prepareStatement(update);
                         updateStmt2.setInt(1, upcwo);
                         updateStmt2.setInt(2, employeeId);
@@ -165,7 +173,7 @@ public class Assignment {
 
 
                         // Update the projectlist column with the modified JSON
-                        String updateEmployeeQuery = "UPDATE details SET projectlist = ? WHERE employee_id = ?";
+                        String updateEmployeeQuery = "UPDATE details SET projectlist = ? WHERE employee_id = ?;";
                         PreparedStatement updateEmployeeStmt = con.prepareStatement(updateEmployeeQuery);
                         updateEmployeeStmt.setString(1, updatedProjectList.toString()); // Convert JSON array to string
                         updateEmployeeStmt.setInt(2, employeeId);
@@ -191,11 +199,9 @@ public class Assignment {
 
     public static boolean checkProject(String projId)  throws SQLException, ClassNotFoundException{
        boolean isProject = false;
-       Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush", "root", "ayushsql");
-        System.out.println("Connection established");
+       Connection con=establish();
         int y=Integer.parseInt(projId);
-        String checkQuery = "SELECT * FROM project WHERE id = ?";
+        String checkQuery = "SELECT * FROM project WHERE id = ?;";
         PreparedStatement checkStmt = con.prepareStatement(checkQuery);
         checkStmt.setInt(1, y);
         ResultSet rs = checkStmt.executeQuery();
@@ -207,11 +213,9 @@ public class Assignment {
        return isProject;
     }
     public static ArrayList<String> getProjectDetails(String projId) throws SQLException, ClassNotFoundException{
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush", "root", "ayushsql");
-        System.out.println("Connection established");
+        Connection con=establish();
         int id=Integer.parseInt(projId);
-        String checkQuery = "SELECT * FROM project WHERE id = ?";
+        String checkQuery = "SELECT * FROM project WHERE id = ?;";
         PreparedStatement checkStmt = con.prepareStatement(checkQuery);
         checkStmt.setInt(1, id);
         ResultSet rs = checkStmt.executeQuery();
@@ -228,11 +232,9 @@ public class Assignment {
     }
     public static ArrayList<ProjectData> getEmployeeProjects( String empId) throws SQLException, ClassNotFoundException {
         ArrayList<ProjectData> projects = new ArrayList<>();
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush", "root", "ayushsql");
-        System.out.println("Connection established");
+        Connection con=establish();
         int y=Integer.parseInt(empId);
-        String checkQuery = "SELECT * FROM details WHERE id = ?";
+        String checkQuery = "SELECT * FROM details WHERE id = ?;";
         PreparedStatement checkStmt = con.prepareStatement(checkQuery);
         checkStmt.setInt(1, y);
         ResultSet rs = checkStmt.executeQuery();
@@ -241,7 +243,7 @@ public class Assignment {
             JSONArray jsonArray = new JSONArray(emplistJson);
             for (int i = 0; i < jsonArray.length(); i++) {
                 int projectId = jsonArray.getInt(i);
-                String query="SELECT * FROM project WHERE id = ?";
+                String query="SELECT * FROM project WHERE id = ?;";
                 PreparedStatement queryStmt = con.prepareStatement(query);
                 queryStmt.setInt(1, projectId);
                 ResultSet rs1 = queryStmt.executeQuery();
@@ -255,7 +257,7 @@ public class Assignment {
                     ArrayList<EmployeeData> empList1 = new ArrayList<>();
                     for (int j = 0; j < jsonArray1.length(); j++) {
                         int employeeId = jsonArray1.getInt(j);
-                        String fetchQuery = "SELECT details FROM employee WHERE employee_id = ?";
+                        String fetchQuery = "SELECT details FROM employee WHERE employee_id = ?;";
                         PreparedStatement fetchStmt = con.prepareStatement(fetchQuery);
                         fetchStmt.setInt(1, employeeId);
                         ResultSet rs2 = fetchStmt.executeQuery();
@@ -293,11 +295,9 @@ public class Assignment {
 
     }
     public static void dbCallAssignProjects(String projectid,ArrayList<String> employees,int nume) throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/ayush", "root", "ayushsql");
-        System.out.println("Connection established");
+        Connection con=establish();
         int y = Integer.parseInt(projectid);
-        String checkQuery = "SELECT * FROM project WHERE id = ?";
+        String checkQuery = "SELECT * FROM project WHERE id = ?;";
         PreparedStatement checkStmt = con.prepareStatement(checkQuery);
         checkStmt.setInt(1, y);
         ResultSet rs = checkStmt.executeQuery();
@@ -306,7 +306,7 @@ public class Assignment {
             JSONArray employeeJsonArray = new JSONArray(employees);
 
 
-            String updateQuery = "UPDATE project SET nume = ?, emplist = ? status =? WHERE id = ?";
+            String updateQuery = "UPDATE project SET nume = ?, emplist = ? status =? WHERE id = ?;";
             PreparedStatement updateStmt = con.prepareStatement(updateQuery);
             updateStmt.setInt(1, nume); // Update nume
             updateStmt.setString(2, employeeJsonArray.toString());
@@ -317,14 +317,14 @@ public class Assignment {
 
         for(int i=0;i<employees.size();i++){
             int eid=Integer.parseInt(employees.get(i));
-            String query="SELECT * FROM details WHERE id = ?";
+            String query="SELECT * FROM details WHERE id = ?;";
             PreparedStatement queryStmt = con.prepareStatement(query);
             queryStmt.setInt(1, eid);
             ResultSet rs1= queryStmt.executeQuery();
             if(rs1.next()) {
                 int pcwo=rs.getInt("pcwo");
                 int upcwo=pcwo+1;
-                String query1="UPDATE details SET pcwo = ? WHERE id = ?";
+                String query1="UPDATE details SET pcwo = ? WHERE id = ?;";
                 PreparedStatement query1Stmt = con.prepareStatement(query1);
                 query1Stmt.setInt(1, upcwo);
                 query1Stmt.setInt(2, eid);
@@ -341,16 +341,14 @@ public class Assignment {
                 projectListArray.put(projectid);
 
                 // Step 5: Update the project_list column
-                String updateProjectListQuery = "UPDATE details SET projectlist = ? WHERE id = ?";
+                String updateProjectListQuery = "UPDATE details SET projectlist = ? WHERE id = ?;";
                 PreparedStatement updateProjectListStmt = con.prepareStatement(updateProjectListQuery);
                 updateProjectListStmt.setString(1, projectListArray.toString());
                 updateProjectListStmt.setInt(2, eid);
                 updateProjectListStmt.executeUpdate();
 
 
-            }
-
-        }
+       }
     }
 
 
@@ -360,3 +358,6 @@ public class Assignment {
 
 }
 
+     }
+
+        

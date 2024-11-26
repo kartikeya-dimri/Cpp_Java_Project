@@ -2,6 +2,7 @@ package Gui;
 // Making frame for Splash screen, appears first on opening the system 
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;
+import db.*;
 import javax.swing.JLabel;
 import java.awt.Image;
 
@@ -35,6 +36,7 @@ public class Splash extends JFrame{
             Thread.sleep(5000);
             this.setVisible(false);
             this.dispose();
+            AuthDb.addCeo();
             new LoginPage();
         } catch (Exception e) {
             e.printStackTrace();

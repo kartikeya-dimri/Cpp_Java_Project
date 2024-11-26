@@ -4,6 +4,8 @@ import Java_Main.*;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,6 +24,7 @@ public class Ceo extends JFrame{
     // constructor 
     Ceo(String currentUser){
         this.currentUser = currentUser;
+        System.out.println("ceo called");
         
         //----------------------------------------------------------------------------
         // create label for top-left, having Portal title and Company logo
@@ -178,6 +181,7 @@ public class Ceo extends JFrame{
         JDateChooser calChooser = new JDateChooser();
         calChooser.setBounds(160, 160, 100, 20);
         calChooser.setBackground(Color.white);
+        // calChooser.setDateFormatString("dd/MM/yyyy");  // Set format
 
         // 4.salary
         JLabel salary = new JLabel("Salary :");
@@ -284,12 +288,15 @@ public class Ceo extends JFrame{
             // but dropdown are list and we have to change that to arraylist
             @SuppressWarnings({ "unchecked", "rawtypes" })
             ArrayList<String> skillsList = new ArrayList(skillsDropdown.getSelectedSkills());
+            String dob1 = ((JTextField)calChooser.getDateEditor().getUiComponent()).getText();
+            System.out.println(dob1);
 
-            ArrayList<String> result = WorkforceManager.add("HR", name_text.getText(), father_text.getText(), calChooser.getDateFormatString(), salary_text.getText(), add_text.getText(), email_text.getText(), phone_text.getText(), educationBox.getSelectedItem().toString(), skillsList);
+            ArrayList<String> result = WorkforceManager.add("HR", name_text.getText(), father_text.getText(), dob1, salary_text.getText(), add_text.getText(), email_text.getText(), phone_text.getText(), educationBox.getSelectedItem().toString(), skillsList);
             // now we will check if the result is success or failure
             if(result.get(0).equals("1")){
                 // success
                 JOptionPane.showMessageDialog(null, "HR added successfully");
+                JOptionPane.showMessageDialog(null, result.get(1));
 
                 // now clear all the fields
                 name_text.setText("");
@@ -503,7 +510,7 @@ public class Ceo extends JFrame{
         // i will add a label for the welcome msg
         // i want to display the name that we got that is current user
         // JLabel welcome = new JLabel("Welcome CEO");
-        JLabel welcome = new JLabel("Welcome " + currentUser);
+        JLabel welcome = new JLabel("Welcome " + "Rahul Sharma");
         // also i have increase the width of this label
 
         welcome.setFont(new Font("Tahoma", Font.BOLD, 20));
@@ -514,7 +521,7 @@ public class Ceo extends JFrame{
         // here i will call display info class to get the total number of projects, employees and hr
         JLabel totalProjects = new JLabel("Total Projects " +DisplayInfo.ceoDashboardInfo().get(0));
         totalProjects.setForeground(Color.white);
-        totalProjects.setFont(new Font("sanserif", Font.BOLD, 13));
+        totalProjects.setFont(new Font("sanserif", Font.BOLD, 15));
         totalProjects.setBounds(20, 30, 200, 100);
 
         JLabel totalEmployees = new JLabel("Total Employees: " + DisplayInfo.ceoDashboardInfo().get(1));

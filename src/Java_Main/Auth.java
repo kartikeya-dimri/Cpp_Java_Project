@@ -10,8 +10,10 @@ public class Auth{
     // will help to check username and password
     //also forgot password later
     public static boolean login(String username, String password, String status){
+        System.out.println(username + " " + password + " " + status);
         //status- ceo, emp, etc.
-        if(!isLoginCorrect(username, password, status)){
+        
+        if(isLoginCorrect(username, password, status)){
             System.out.println("Empty input");
             return false;
         }
@@ -28,7 +30,7 @@ public class Auth{
             return AuthDb.signin(userId, password, status);
         }
         catch(Exception e){
-            System.out.println("Error in signin");
+            e.printStackTrace();
         }
         return false;
     }

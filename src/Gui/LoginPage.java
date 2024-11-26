@@ -146,9 +146,11 @@ public class LoginPage extends JFrame implements ActionListener{
                 // same thing that we did in hr login
                 System.out.println("Login button clicked");
                 // now here i should check if the username and password are correct which are there in aunthentication file in backend package so lets import that 
+               
                 String password = new String(passwordField.getPassword());
-                if(Auth.login(usernameField.getText(), password, "ceo")){
-                    System.out.println("if");
+                System.out.println(password + " " + usernameField.getText());
+                if(Auth.login(usernameField.getText(), password, "CEO")){
+                    System.out.println("if bhai ho jaye");
                     this.dispose();
                     new Ceo(usernameField.getText());
                 }

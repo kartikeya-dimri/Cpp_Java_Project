@@ -31,7 +31,7 @@ public class HR extends JFrame{
     private String currentUser;
 
     // Data for HR
-    ArrayList<String> dashboardInfo = DisplayInfo.hrDashboardInfo(this.currentUser);
+    ArrayList<String> dashboardInfo;
     JTable projects;
 
     // now as we access different right panel in different function we will declare them as instance variables
@@ -43,6 +43,7 @@ public class HR extends JFrame{
     // constructor
     HR(String a){
         this.currentUser = a;
+        dashboardInfo = DisplayInfo.hrDashboardInfo(this.currentUser);
         // now in lines of ceo employee we will hava a left panel in which there will be buttons like add employee, remove employee,
         // projects and then logout
         JLabel title = new JLabel("Online Portal");

@@ -12,9 +12,9 @@ public class WorkforceManager {
         if(status.trim().isEmpty() || name.trim().isEmpty() || fatherName.trim().isEmpty() || dob.trim().isEmpty() || salary.trim().isEmpty() || address.trim().isEmpty() || email.trim().isEmpty() || phoneNum.trim().isEmpty() || highestQual.trim().isEmpty()){
             return false;
         }   
-        if(phoneNum.length()!=10){
-            return false;
-        }
+        // if(phoneNum.length()!=10){
+        //     return false;
+        // }
 
         return true;
     }
@@ -32,20 +32,21 @@ public class WorkforceManager {
             result.add("Invalid parameters");
             return result;
         }
-        result.add("1");
         int Salary;
         try {
             Salary=Integer.parseInt(salary);
         } catch (NumberFormatException e) {
+            result.add("0");
             result.add("Salary is not a number");
             return result;
         }
+        result.add("1");
 
         try {
             result.add(AuthDb.addemp(status, name, dob, fatherName, email, skills, Salary, phoneNum, highestQual, address));
         } catch (Exception e) {
             result.add("Error in adding employee");
-            return result;
+            return result; 
         }
 
         return result; 

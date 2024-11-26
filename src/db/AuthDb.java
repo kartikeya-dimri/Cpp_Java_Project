@@ -26,28 +26,41 @@ public class AuthDb {
     public static Connection establishConnection() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         System.out.println("Database loaded");
-        Connection con=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Company","root","123456@mysql");
+        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/company","root","dimriKartik126");
         System.out.println("Connection established");
         return con;
     }
-    public static boolean checkemp(String Id) throws SQLException, ClassNotFoundException {
+    public static int checkemp(String Id) throws SQLException, ClassNotFoundException {
         Connection con=establishConnection();
-        PreparedStatement ps=con.prepareStatement("select * from details where id=?");
+        PreparedStatement ps=con.prepareStatement("select * from details where id=?;");
+        System.out.println("working");
+    
         ps.setInt(1, Integer.parseInt(Id));
+        System.out.println("w");
         ResultSet rs=ps.executeQuery();
-        return rs.getBoolean("Employed");
+        System.out.println("q");
+        if(rs.next()){
+            int e=rs.getInt("Employed");
+        System.out.println(e);
+        return e;
+        }
+        else {
+            return 0;
+        }
+        
     }
     public static boolean signin(int empid,String pass, String pos) throws Exception{
+        System.out.println("Nipun");
         Connection con=establishConnection();
         PreparedStatement initialisation=con.prepareStatement("create table if not exists credentials(id int auto_increment primary key ,password varchar(500) not null,position varchar(50));");
         initialisation.execute();
         System.out.println("Credentials success");
         PreparedStatement initialisation2=con.prepareStatement("create table if not exists details(id int primary key , position varchar(50), name varchar(100) not null,dob varchar(100),Fathername varchar(100),phoneNumber varchar(100),HighestQual varchar(100),Employed boolean default true,email varchar(100) not null,skills JSON,projectlist JSON,pcwo int default 0 ,salary int not null,address varchar(500),foreign key (id) references credentials(id));");
         initialisation2.execute();
-        if(!checkemp(String.valueOf(empid))){
+        if(checkemp(String.valueOf(empid))==0){
             return false;
         }
-        PreparedStatement ps0=con.prepareStatement("select *from credentials");
+        PreparedStatement ps0=con.prepareStatement("select *from credentials;");
         ResultSet rs= ps0.executeQuery();
         boolean emplid=false;
         String hashpas = null;
@@ -65,6 +78,7 @@ public class AuthDb {
             con.close();
             return false;
         }
+        System.out.println("Yes");
         if(!Passwordhashing.checkPassword(pass,hashpas) && Objects.equals(pos,p)){
             System.out.println("Incorrect Password");
             con.close();
@@ -77,6 +91,7 @@ public class AuthDb {
     }
     public static String addemp(String position, String name,String dob, String Father, String email, ArrayList<String> skills,int salary,String phone,String qual,String address) throws Exception{
         Connection con=establishConnection();
+        System.out.println("adding employee");
         PreparedStatement initialisation=con.prepareStatement("create table if not exists credentials(id int auto_increment primary key ,password varchar(500) not null,position varchar(50));");
         initialisation.execute();
         System.out.println("Credentials success");
@@ -89,7 +104,7 @@ public class AuthDb {
         //Adding employee in the credential database
         System.out.println("Error occur");
         //Do we want to check for any same emp???
-        PreparedStatement ps=con.prepareStatement("insert into credentials(password,position) values(?,?)",PreparedStatement.RETURN_GENERATED_KEYS);
+        PreparedStatement ps=con.prepareStatement("insert into credentials(password,position) values(?,?);",PreparedStatement.RETURN_GENERATED_KEYS);
         ps.setString(1, hashedPassword);
         ps.setString(2, position);
         int i=ps.executeUpdate();
@@ -100,13 +115,14 @@ public class AuthDb {
             if (generatedKeys.next()) {
                 lastInsertedId = generatedKeys.getInt(1);  // This is the last inserted ID
                 System.out.println("Last inserted ID: " + lastInsertedId);
+                System.out.println("fuck you");
             }
         }
         else{
             System.out.println("Fail");
             return "";
         }
-        PreparedStatement ps2= con.prepareStatement("insert into details(id,position,name,dob,Fathername,phoneNumber,HighestQual,email,skills,salary,address) values(?,?, ?, ?, ?, ?, ?,?,?,?,?)");
+        PreparedStatement ps2= con.prepareStatement("insert into details(id,position,name,dob,Fathername,phoneNumber,HighestQual,email,skills,salary,address) values(?,?, ?, ?, ?, ?, ?,?,?,?,?);");
         ps2.setInt(1,lastInsertedId);
         ps2.setString(2,position);
         ps2.setString(3, name);
@@ -117,17 +133,30 @@ public class AuthDb {
         ps2.setString(8,email);
         JSONArray jsonArray = new JSONArray(skills);
         String jsonSkills = jsonArray.toString();
-
+        System.out.println("Hello bhai");
+        System.out.println("JSON Skills: " + jsonSkills);
         ps2.setString(9,jsonSkills);//array list
         ps2.setInt(10,salary);
         ps2.setString(11,address);
-        int k=ps2.executeUpdate();
-        if(k>0){
-            System.out.println("Success");
-        }
-        else{
-            System.out.println("Fail");
-        }
+        System.out.println("germany1");
+        //int k=ps2.executeUpdate();
+        con.setAutoCommit(false);
+try {
+    ps2.executeUpdate();
+    con.commit();  // Commit changes
+} catch (SQLException e) {
+    con.rollback();  // Rollback on failure
+    e.printStackTrace();
+} finally {
+    con.setAutoCommit(true);
+}
+        System.out.println("germany");
+        // if(k>0){
+        //     System.out.println("Success");
+        // }
+        // else{
+        //     System.out.println("Fail");
+        // }
 
         con.close();
         return password;
@@ -135,7 +164,7 @@ public class AuthDb {
     public static boolean forgotpassword(int empid,String pass) throws Exception{
         Class.forName("com.mysql.cj.jdbc.Driver");
 
-        Connection con=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/Company","root","123456@mysql");
+        Connection con=DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/company","root","dimriKartik126");
         PreparedStatement ps0=con.prepareStatement("select *from credentials");
         ResultSet rs= ps0.executeQuery();
         boolean userexists=false;
@@ -166,10 +195,22 @@ public class AuthDb {
         return true;
     }
     //For ceo dashboard
+    public static boolean addCeo() throws ClassNotFoundException, SQLException{
+        System.out.println("dgfvhb");
+        Connection con=establishConnection();
+        System.out.println("ubcjcb");
+        PreparedStatement ps=con.prepareStatement("update credentials set password=? where id=?;");
+    
+        ps.setString(1, Passwordhashing.hashPassword("Admin123"));
+        ps.setInt(2, 1);
+        ps.executeUpdate();
+        System.out.println("tree");
+        return true;
+    }
     public static ArrayList<Integer> work_force() throws SQLException, ClassNotFoundException {
         ArrayList<Integer> wf=new ArrayList<Integer>();
         Connection con=establishConnection();
-        PreparedStatement ps0=con.prepareStatement("select* from details");
+        PreparedStatement ps0=con.prepareStatement("select* from details;");
         ResultSet rs= ps0.executeQuery();
         int nume=0;
         int numhr=0;
@@ -183,6 +224,7 @@ public class AuthDb {
                 }
             }
         }
+        wf.add(Assignment.numberOfProject());
         wf.add(nume);
         wf.add(numhr);
         return wf;
@@ -190,7 +232,7 @@ public class AuthDb {
     //for employee dashboard info
     public static ArrayList<String> empdash(String empId) throws SQLException, ClassNotFoundException {
         Connection con=establishConnection();
-        PreparedStatement ps0=con.prepareStatement("select name,pcwo from details where id=?");
+        PreparedStatement ps0=con.prepareStatement("select name,pcwo from details where id=?;");
         ps0.setInt(1,Integer.parseInt(empId));
         ResultSet rs= ps0.executeQuery();
         ArrayList<String> empdashboard=new ArrayList<>();
@@ -203,7 +245,7 @@ public class AuthDb {
     }
     public static ArrayList<String> getempdetail(String empId) throws SQLException, ClassNotFoundException {
         Connection con=establishConnection();
-        PreparedStatement ps0=con.prepareStatement("select * from details where id=?");
+        PreparedStatement ps0=con.prepareStatement("select * from details where id=?;");
         ps0.setInt(1,Integer.parseInt(empId));
         ResultSet rs= ps0.executeQuery();
         ArrayList<String> empdetail=new ArrayList<>();
@@ -222,7 +264,7 @@ public class AuthDb {
     public static ArrayList<String> getempskills(String empId) throws SQLException, ClassNotFoundException {
         Connection con=establishConnection();
         ArrayList<String> empskills=new ArrayList<>();
-        PreparedStatement ps0=con.prepareStatement("select * from details where id=?");
+        PreparedStatement ps0=con.prepareStatement("select * from details where id=?;");
         ps0.setInt(1,Integer.parseInt(empId));
         ResultSet rs= ps0.executeQuery();
 
@@ -237,7 +279,7 @@ public class AuthDb {
     }
     public static ArrayList<String> getempprojects(String empId) throws SQLException, ClassNotFoundException {
         Connection con=establishConnection();
-        PreparedStatement ps0=con.prepareStatement("select * from details where id=?");
+        PreparedStatement ps0=con.prepareStatement("select * from details where id=?;");
         ps0.setInt(1,Integer.parseInt(empId));
         ResultSet rs= ps0.executeQuery();
         ArrayList<String> empproject=new ArrayList<>();
@@ -251,32 +293,51 @@ public class AuthDb {
         return empproject;
     }
     public static ArrayList<String>  hrdashboard(String empId) throws SQLException, ClassNotFoundException {
+        ArrayList<String> hrdashboard1=new ArrayList<>();
+        try{
         Connection con=establishConnection();
-        PreparedStatement ps0=con.prepareStatement("select * from details where id=?");
-        ps0.setInt(1,Integer.parseInt(empId));
+        System.out.println("In hr");
+        PreparedStatement ps0=con.prepareStatement("select * from details where id=?;");
+        System.out.println("telling");
+        System.out.println(empId);
+        int y=Integer.parseInt(empId);
+        ps0.setInt(1,y);
+        System.out.println("Ayush");
         ResultSet rs= ps0.executeQuery();
-        ArrayList<String> hrdashboard=new ArrayList<>();
+        System.out.println("executed");
+        
         while(rs.next()){
-            hrdashboard.add(rs.getString("name"));
-            hrdashboard.add(String.valueOf(work_force().get(1)));
+            hrdashboard1.add(rs.getString("name"));
+            hrdashboard1.add(String.valueOf(work_force().get(1)));
+            hrdashboard1.add(String.valueOf(Assignment.getProjects("Ongoing").size()));
             //call ayush function to get ongoing projects
         }
-        return hrdashboard;
+        System.out.println(hrdashboard1);
+        System.out.println(hrdashboard1.size()+"\n\n\n");
+        
+    }
+        catch (SQLException e) {
+            e.printStackTrace();
+            throw e;  // Rethrow the exception after logging it
+        }
+        return hrdashboard1;
     }
     public static ArrayList<String> searchfordelete(String status,String Id) throws SQLException, ClassNotFoundException {
         Connection con=establishConnection();
         ArrayList<String> searchfordelete=new ArrayList<>();
-        PreparedStatement ps0=con.prepareStatement("select * from details where id=?");
+        PreparedStatement ps0=con.prepareStatement("select * from details where id=?;");
         ps0.setInt(1,Integer.parseInt(Id));
         ResultSet rs= ps0.executeQuery();
-        if(status.equals("CEO") && rs.getString("position").equals("HR")){
+        System.out.println("Hello");
+
+        if(rs.next() && status.equals("CEO") && rs.getString("position").equals("HR")){
             searchfordelete.add("1");
             searchfordelete.add(rs.getString("name"));
             searchfordelete.add(rs.getString("phoneNumber"));
             searchfordelete.add(rs.getString("email"));
 
         }
-        else if(status.equals("HR") && rs.getString("position").equals("EMP")){
+        else if(rs.next() && status.equals("HR") && rs.getString("position").equals("EMP")){
             searchfordelete.add("1");
             searchfordelete.add(rs.getString("name"));
             searchfordelete.add(rs.getString("phoneNumber"));
@@ -292,18 +353,19 @@ public class AuthDb {
             searchfordelete.add("");
             searchfordelete.add("");
         }
+        System.out.println("kill");
         return searchfordelete;
     }
     public static void deleteEmp(String status, String Id) throws SQLException, ClassNotFoundException {
         Connection con=establishConnection();
-        PreparedStatement ps0=con.prepareStatement("update details set Employed=? where id=?");
+        PreparedStatement ps0=con.prepareStatement("update details set Employed=? where id=?;");
         ps0.setBoolean(1,false);
         ps0.setInt(2,Integer.parseInt(Id));
         ps0.executeUpdate();
     }
     public static ArrayList<EmployeeSkillData> getallskills() throws SQLException, ClassNotFoundException {
         Connection con=establishConnection();
-        PreparedStatement ps0=con.prepareStatement("select * from details");
+        PreparedStatement ps0=con.prepareStatement("select * from details;");
         ResultSet rs= ps0.executeQuery();
         ArrayList<EmployeeSkillData> f=new ArrayList<>();
         while(rs.next()){
