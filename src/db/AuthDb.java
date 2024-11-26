@@ -26,7 +26,7 @@ public class AuthDb {
     public static Connection establishConnection() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         System.out.println("Database loaded");
-        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/company","root","dimriKartik126");
+        Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/company","root","MySQL@009");
         System.out.println("Connection established");
         return con;
     }

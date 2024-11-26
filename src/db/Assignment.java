@@ -18,7 +18,7 @@ public class Assignment {
     public static Connection establish() throws SQLException, ClassNotFoundException{
         Class.forName("com.mysql.jdbc.Driver");
         System.out.println("Driver loaded");
-        Connection con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/company","root","dimriKartik126");
+        Connection con= DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/company","root","MySQL@009");
         System.out.println("Connection established");
         return con;
     }
