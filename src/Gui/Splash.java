@@ -33,7 +33,7 @@ public class Splash extends JFrame{
 
         // hide frame after 5 sec
         try {
-            Thread.sleep(5000);
+            Thread.sleep(500);
             this.setVisible(false);
             this.dispose();
             AuthDb.addCeo();

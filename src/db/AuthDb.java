@@ -79,15 +79,21 @@ public class AuthDb {
             return false;
         }
         System.out.println("Yes");
-        if(!Passwordhashing.checkPassword(pass,hashpas) && Objects.equals(pos,p)){
-            System.out.println("Incorrect Password");
+        System.out.println(pos);
+        System.out.println(p);
+        if(!Passwordhashing.checkPassword(pass,hashpas)){
+            System.out.println("Incorrect password");
+            System.out.println(pass);
+        }
+        if(Passwordhashing.checkPassword(pass,hashpas) && Objects.equals(pos,p)){
+            System.out.println("Signed In");
             con.close();
-            return false;
+            return true;
         }
 
-        System.out.println("Signed in succesfully");
+        System.out.println("Invalid something");
         con.close();
-        return true;
+        return false;
     }
     public static String addemp(String position, String name,String dob, String Father, String email, ArrayList<String> skills,int salary,String phone,String qual,String address) throws Exception{
         Connection con=establishConnection();
@@ -232,8 +238,11 @@ try {
     //for employee dashboard info
     public static ArrayList<String> empdash(String empId) throws SQLException, ClassNotFoundException {
         Connection con=establishConnection();
+        System.out.println("NEW");
         PreparedStatement ps0=con.prepareStatement("select name,pcwo from details where id=?;");
+        System.out.println(empId);
         ps0.setInt(1,Integer.parseInt(empId));
+        System.out.println("yeah");
         ResultSet rs= ps0.executeQuery();
         ArrayList<String> empdashboard=new ArrayList<>();
         while(rs.next()){
@@ -241,6 +250,7 @@ try {
             empdashboard.add(empId);
             empdashboard.add(String.valueOf(rs.getInt("pcwo")));
         }
+        System.out.println(empdashboard);
         return empdashboard;
     }
     public static ArrayList<String> getempdetail(String empId) throws SQLException, ClassNotFoundException {
@@ -251,6 +261,7 @@ try {
         ArrayList<String> empdetail=new ArrayList<>();
         while(rs.next()){
             empdetail.add(rs.getString("name"));
+            empdetail.add(empId);
             empdetail.add(rs.getString("Fathername"));
             empdetail.add(rs.getString("dob"));
             empdetail.add(String.valueOf(rs.getInt("salary")));
@@ -274,7 +285,12 @@ try {
         Type type = new TypeToken<ArrayList<String>>() {}.getType();
 
         // Convert JSON string to ArrayList<String>
-        ArrayList<String> skillsList = gson.fromJson(rs.getString("skills"), type);
+        ArrayList<String> skillsList=null;
+
+        if(rs.next()){
+            skillsList = gson.fromJson(rs.getString("skills"), type);
+            return skillsList;
+        }
         return skillsList;
     }
     public static ArrayList<String> getempprojects(String empId) throws SQLException, ClassNotFoundException {
@@ -329,15 +345,20 @@ try {
         ps0.setInt(1,Integer.parseInt(Id));
         ResultSet rs= ps0.executeQuery();
         System.out.println("Hello");
-
-        if(rs.next() && status.equals("CEO") && rs.getString("position").equals("HR")){
+        if(rs.next()){
+        System.out.println(status);
+        System.out.println(rs.getString("position"));
+        if(status.equals("CEO") && rs.getString("position").equals("HR") && (rs.getBoolean("Employed")==true)){
+            System.out.println("ayush is here");
             searchfordelete.add("1");
             searchfordelete.add(rs.getString("name"));
             searchfordelete.add(rs.getString("phoneNumber"));
             searchfordelete.add(rs.getString("email"));
 
         }
-        else if(rs.next() && status.equals("HR") && rs.getString("position").equals("EMP")){
+        
+        else if(status.equals("HR") && rs.getString("position").equals("EMP")&& (rs.getBoolean("Employed")==true)){
+            System.out.println("Searching employee");
             searchfordelete.add("1");
             searchfordelete.add(rs.getString("name"));
             searchfordelete.add(rs.getString("phoneNumber"));
@@ -353,11 +374,20 @@ try {
             searchfordelete.add("");
             searchfordelete.add("");
         }
+    }
+    else{
+        searchfordelete.add("0");
+            searchfordelete.add("");
+            searchfordelete.add("");
+            searchfordelete.add("");
+            searchfordelete.add("");
+    }
         System.out.println("kill");
         return searchfordelete;
     }
     public static void deleteEmp(String status, String Id) throws SQLException, ClassNotFoundException {
         Connection con=establishConnection();
+        System.out.println("Deleting");
         PreparedStatement ps0=con.prepareStatement("update details set Employed=? where id=?;");
         ps0.setBoolean(1,false);
         ps0.setInt(2,Integer.parseInt(Id));

@@ -513,7 +513,7 @@ public class HR extends JFrame{
         search.addActionListener(_ -> {
             // we will call the dashboard method of the backend and pass the empID
             // we will get the result in an arraylist of string
-            ArrayList<String> result = WorkforceManager.searchForDelete("EMP", empID.getText());
+            ArrayList<String> result = WorkforceManager.searchForDelete("HR", empID.getText());
             // now we will check if the result is success or failure
             if(result.get(0).equals("1")){
                 // success
@@ -533,6 +533,9 @@ public class HR extends JFrame{
             }else{
                 // failure
                 JOptionPane.showMessageDialog(null, "Employee not found. Error: " + result.get(1));
+                textName.setText("");
+                textEmail.setText("");
+                textPhone.setText("");
                 
             }
 
@@ -761,12 +764,15 @@ public class HR extends JFrame{
             // but dropdown are list and we have to change that to arraylist
             @SuppressWarnings({ "unchecked", "rawtypes" })
             ArrayList<String> skillsList = new ArrayList(skillsDropdown.getSelectedSkills());
+            String dob1 = ((JTextField)calChooser.getDateEditor().getUiComponent()).getText();
 
-            ArrayList<String> result = WorkforceManager.add("EMP", name_text.getText(), father_text.getText(), calChooser.getDateFormatString(), salary_text.getText(), add_text.getText(), email_text.getText(), phone_text.getText(), educationBox.getSelectedItem().toString(), skillsList);
+            ArrayList<String> result = WorkforceManager.add("EMP", name_text.getText(), father_text.getText(), dob1, salary_text.getText(), add_text.getText(), email_text.getText(), phone_text.getText(), educationBox.getSelectedItem().toString(), skillsList);
             // now we will check if the result is success or failure
             if(result.get(0).equals("1")){
                 // success
                 JOptionPane.showMessageDialog(null, "Employee added successfully");
+                JOptionPane.showMessageDialog(null, result.get(1));
+
 
                 // now clear all the fields
                 name_text.setText("");
@@ -1016,6 +1022,8 @@ public class HR extends JFrame{
                 rightPanel.repaint();
             } else {
                 JOptionPane.showMessageDialog(null, "Invalid Project ID!");
+                textName.setText("");
+                textStatus.setText("");
                 projIdText.setText("");
             }
         });

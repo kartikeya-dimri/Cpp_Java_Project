@@ -242,7 +242,7 @@ public class LoginPage extends JFrame implements ActionListener{
                 System.out.println("Login button clicked");
                 // now here i should check if the username and password are correct which are there in aunthentication file in backend package so lets import that 
                 String password = new String(passwordField.getPassword());
-                if(Auth.login(usernameField.getText(), password, "hr")){
+                if(Auth.login(usernameField.getText(), password, "HR")){
                     System.out.println("if");
                     this.dispose();
                     new HR(usernameField.getText());
@@ -332,8 +332,8 @@ public class LoginPage extends JFrame implements ActionListener{
             loginButton.addActionListener(_ -> {
                 // same thing that we did in hr login
                 String password = new String(passwordField.getPassword());
-                if(Auth.login(usernameField.getText(), password, "emp")){
-                    System.out.println("if");
+                if(Auth.login(usernameField.getText(), password, "EMP")){
+                    System.out.println("if in emp");
                     this.dispose();
                     new Employee(usernameField.getText());
                 }
