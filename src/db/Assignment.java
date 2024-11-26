@@ -1,12 +1,17 @@
 package db;
 import Java_Main.*;
 
+import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.json.JSONArray;
+import org.json.JSONException;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 
 public class Assignment {
@@ -64,51 +69,77 @@ public class Assignment {
     public static ArrayList<ProjectData> getProjects(String statusType) throws SQLException, ClassNotFoundException {
 
         Connection con=establish();
-            String checkQuery = "SELECT * FROM project WHERE status = ?;";
-            PreparedStatement checkStmt = con.prepareStatement(checkQuery);
+        System.out.println(statusType+"   Am ayush\n\n\n");
+        String checkQuery="";
+        PreparedStatement checkStmt;
+        if(statusType.equals("All")){
+            checkQuery = "SELECT * FROM project;";    
+             checkStmt = con.prepareStatement(checkQuery);
+        }
+        else{
+            checkQuery = "SELECT * FROM project WHERE status = ?;";
+             checkStmt = con.prepareStatement(checkQuery);
             checkStmt.setString(1, statusType);
+        }
+            
+            
             ResultSet rs = checkStmt.executeQuery();
+            
+            
 
             ArrayList<ProjectData> projects = new ArrayList<>();
             while (rs.next()) {
+                System.out.println("inside database");
                 String emplistJson = rs.getString("emplist");
                 String projectstatus = rs.getString("status");
                 int projectid1 = rs.getInt("id");
+                System.out.println(projectid1);
                 String projectname = rs.getString("project_name");
                 int numOfEmp = rs.getInt("nume");
-
-
+                
+                System.out.println(projectname);
+                //JSONArray jsonArray=null;
+                Gson gson = new Gson();
+                Type type = new TypeToken<ArrayList<String>>() {}.getType();
+                ArrayList<String> jsonArray = gson.fromJson(rs.getString("emplist"), type);
+                ArrayList<EmployeeData> employeeids=null;
                 // Parse JSON into a list of integers
-                JSONArray jsonArray = new JSONArray(emplistJson);
-                ArrayList<EmployeeData> employeeids = new ArrayList<>();
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    String x = jsonArray.getString(i);
-                    String query = "Select * from details where employee_id = ?;";
+                try{
+                employeeids = new ArrayList<>();
+                if(jsonArray!=null){
+                //     System.out.println("next step");
+                
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    String x = jsonArray.get(i);
+                    String query = "Select * from details where id = ?;";
                     PreparedStatement ps1 = con.prepareStatement(query);
+                    System.out.println("inside inner loop");
                     int y = Integer.parseInt(x);
                     ps1.setInt(1, y);
                     ResultSet rs1 = ps1.executeQuery();
+                    System.out.println("why");
                     if (rs1.next()) {
-                        String name1 = rs1.getString("name");
-                        String fatherName = rs.getString("Fathername");
-                        String dob = rs1.getString("dob");
-                        int salary1 = rs1.getInt("salary");
-                        String salary=Integer.toString(salary1);
-                        String address = rs1.getString("address");
-                        String email = rs1.getString("email");
-                        String phone = rs1.getString("phoneNumber");
-                        String highestQualification = rs1.getString("HighestQual");
-                        String skillsJson = rs1.getString("skills");
-                        ArrayList<String> skills = new ArrayList<>();
-                        JSONArray skillsArray = new JSONArray(skillsJson);
-                        for (int j = 0; j < skillsArray.length(); j++) {
-                            skills.add(skillsArray.getString(j));
-                        }
-                        EmployeeData e = new EmployeeData(name1, x, fatherName, dob, salary, address, email, phone, highestQualification, skills);
+                        ArrayList<String> empdetails=AuthDb.getempdetail(x);
+                        // String name1 = rs1.getString("name");
+                        // String fatherName = rs1.getString("Fathername");
+                        // String dob = rs1.getString("dob");
+                        // int salary1 = rs1.getInt("salary");
+                        // String salary=Integer.toString(salary1);
+                        // String address = rs1.getString("address");
+                        // String email = rs1.getString("email");
+                        // String phone = rs1.getString("phoneNumber");
+                        // String highestQualification = rs1.getString("HighestQual");
+                        ArrayList<String> skills = AuthDb.getempskills(x);
+                        EmployeeData e = new EmployeeData(empdetails.get(0), x, empdetails.get(1), empdetails.get(2), empdetails.get(3), empdetails.get(4), empdetails.get(5), empdetails.get(6),empdetails.get(7), skills);
                         employeeids.add(e);
                     }
                 }
+            }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
                 String projectid=Integer.toString(projectid1);
+                System.out.println(projectid);
                 ProjectData p = new ProjectData(projectstatus, projectid, projectname, numOfEmp, employeeids);
                 projects.add(p);
 
@@ -146,7 +177,7 @@ public class Assignment {
                     int employeeId = jsonArray.getInt(i);
 
                     // Fetch projectlist column of the employee
-                    String fetchQuery = "SELECT projectlist FROM details WHERE employee_id = ?;";
+                    String fetchQuery = "SELECT projectlist FROM details WHERE id = ?;";
                     PreparedStatement fetchStmt = con.prepareStatement(fetchQuery);
                     fetchStmt.setInt(1, employeeId);
                     ResultSet rs1 = fetchStmt.executeQuery();
@@ -173,7 +204,7 @@ public class Assignment {
 
 
                         // Update the projectlist column with the modified JSON
-                        String updateEmployeeQuery = "UPDATE details SET projectlist = ? WHERE employee_id = ?;";
+                        String updateEmployeeQuery = "UPDATE details SET projectlist = ? WHERE id = ?;";
                         PreparedStatement updateEmployeeStmt = con.prepareStatement(updateEmployeeQuery);
                         updateEmployeeStmt.setString(1, updatedProjectList.toString()); // Convert JSON array to string
                         updateEmployeeStmt.setInt(2, employeeId);

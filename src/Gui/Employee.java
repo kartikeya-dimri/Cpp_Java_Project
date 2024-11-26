@@ -32,13 +32,17 @@ public class Employee extends JFrame implements ActionListener {
     JTable project;
 
     // Data for the current user
-    ArrayList<String> employeeDashboard = DisplayInfo.empDashboardInfo(this.currentUser);
-    EmployeeData employeeProfile = DisplayInfo.DashboardDetailsPrint("employee",this.currentUser);
-    ArrayList<ProjectData> employeeProjects = ProjectManager.getEmployeeProjects(this.currentUser);
+    ArrayList<String> employeeDashboard ;
+    EmployeeData employeeProfile ;
+    ArrayList<ProjectData> employeeProjects ;
     
     // Constructor
     Employee(String a) {
+        System.out.println("emp constructor called");
         this.currentUser = a;
+        employeeDashboard=DisplayInfo.empDashboardInfo(this.currentUser);
+        employeeProfile= DisplayInfo.DashboardDetailsPrint("employee",this.currentUser);
+        employeeProjects=ProjectManager.getEmployeeProjects(this.currentUser);
         // CREATE LEFT PANEL
         JLabel title = new JLabel("Online Portal");
         // exit on close
@@ -87,7 +91,7 @@ public class Employee extends JFrame implements ActionListener {
         card1.add(empName);
         
         String cardID = employeeDashboard.get(1);
-        JLabel empId = new JLabel(cardID);
+        JLabel empId = new JLabel("ID : " + cardID);
         empId.setForeground(Color.white);
         empId.setFont(new Font("sanserif", Font.BOLD, 20));
         empId.setBounds(20, 30, 200, 100);

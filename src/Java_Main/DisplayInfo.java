@@ -30,6 +30,7 @@ public class DisplayInfo {
         //empId passed will be always valid
         ArrayList<String> info=new ArrayList<>();//(name, ID and total ongoing projects)
         try {
+            System.out.println(empId+"EMP DASHBOARD INFO METHOD");
             info=AuthDb.empdash(empId);
         } catch (Exception e) {
             System.out.println("Error in DB");
@@ -74,12 +75,16 @@ public class DisplayInfo {
         // now we have the skills arraylist
         try {
             skills=AuthDb.getempskills(empId);
+            System.out.println(skills);
+            System.out.println("NO SKILLS ERROR");
         } catch (Exception e) {
+            System.out.println("eXCEPTION BROTHER");
             System.out.println("Error in DB");
+            e.printStackTrace();
         }
 
         // now we have all the data
-        EmployeeData empData = new EmployeeData(empdetails.get(0), empdetails.get(1), empdetails.get(2), empdetails.get(3), empdetails.get(4), empdetails.get(5), empdetails.get(6), empdetails.get(7), empdetails.get(8), skills);
+        EmployeeData empData = new EmployeeData(empdetails.get(0), empdetails.get(1), empdetails.get(2), empdetails.get(3), empdetails.get(4), empdetails.get(5), empdetails.get(6), empdetails.get(7), empdetails.get(8) ,skills);
 
         return empData;
         

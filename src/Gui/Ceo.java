@@ -397,7 +397,7 @@ public class Ceo extends JFrame{
         search.addActionListener(_ -> {
             // we will call the dashboard method of the backend and pass the empID
             // we will get the result in an arraylist of string
-            ArrayList<String> result = WorkforceManager.searchForDelete("HR", empID.getText());
+            ArrayList<String> result = WorkforceManager.searchForDelete("CEO", empID.getText());
             // now we will check if the result is success or failure
             if(result.get(0).equals("1")){
                 // success
@@ -417,6 +417,9 @@ public class Ceo extends JFrame{
             }else{
                 // failure
                 JOptionPane.showMessageDialog(null, "HR not found. Error: " + result.get(1));
+                textEmail.setText("");
+                textName.setText("");
+                textPhone.setText("");
                 
             }
 
