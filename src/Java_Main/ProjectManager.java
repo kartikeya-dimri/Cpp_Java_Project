@@ -2,6 +2,7 @@ package Java_Main;
 
 import db.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class ProjectManager {
 
@@ -58,7 +59,8 @@ public class ProjectManager {
             System.out.println("cant get all emp details from db");
         }
         //then jni call will happen
-        ArrayList<String>result=AssignProjectsJNI.assignProjects(numOfEmpsRequired, skills, totalEmps);//jni call to cpp
+        // ArrayList<String>result=AssignProjectsJNI.assignProjects(numOfEmpsRequired, skills, totalEmps);//jni call to cpp
+        ArrayList<String>result=assignProjects(numOfEmpsRequired, skills, totalEmps);
         
         if(result.get(0).equals("1")){
             //assignment was successful
@@ -128,5 +130,51 @@ public class ProjectManager {
             return new ArrayList<String>();
         }
     }
+
+    public static boolean sortEmployeesForAssign(EmployeeSkillData a, EmployeeSkillData b) {
+        return a.getNoOfProjects() < b.getNoOfProjects();
+    }
+
+    public static ArrayList<String> assignProjects(int requiredNumber, ArrayList<String> skills, ArrayList<EmployeeSkillData> employees) {
+    int maxNoOfProjects = 5;
+    ArrayList<String> result = new ArrayList<>();
+    ArrayList<EmployeeSkillData> availableEmployees = new ArrayList<>();
+
+    for (EmployeeSkillData employee : employees) {
+        boolean hasAllSkills = true;
+
+        for (String skill : skills) {
+            if (!employee.getSkills().contains(skill)) {
+                hasAllSkills = false;
+                break;
+            }
+        }
+
+        if (hasAllSkills && employee.getNoOfProjects() < maxNoOfProjects) {
+            availableEmployees.add(employee);
+        }
+    }
+
+    if (availableEmployees.size() >= requiredNumber) {
+        result.add("1");
+        availableEmployees.sort(Comparator.comparingInt(EmployeeSkillData::getNoOfProjects));
+
+        for (int i = 0; i < requiredNumber; i++) {
+            EmployeeSkillData emp = availableEmployees.get(i);
+            result.add(emp.getId());
+        }
+    } else {
+        result.add("0");
+        int need = requiredNumber - availableEmployees.size();
+        StringBuilder message = new StringBuilder("Need to hire " + need + " more employees for completing this project.\n");
+        message.append("Please add ").append(need).append(" more employees with these skills\n");
+        for (int i = 0; i < skills.size(); i++) {
+            message.append(i + 1).append(". ").append(skills.get(i)).append("\n");
+        }
+        result.add(message.toString());
+    }
+
+    return result;
+}
 
 }
