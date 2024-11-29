@@ -1,5 +1,0 @@
-Pre Requisites
-sudo apt-get install libcurl4-openssl-dev
-Compilation-
-g++ -o send_email send_email.cpp -lcurl
-./send_email
