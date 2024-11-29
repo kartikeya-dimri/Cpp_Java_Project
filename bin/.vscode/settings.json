@@ -1,0 +1,13 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Users\\Karti\\OneDrive\\Desktop\\try\\Cpp_Java_Project\\Project\\allJar\\activation-1.1.jar",
+        "c:\\Users\\Karti\\OneDrive\\Desktop\\try\\Cpp_Java_Project\\Project\\allJar\\gson-2.11.0.jar",
+        "c:\\Users\\Karti\\OneDrive\\Desktop\\try\\Cpp_Java_Project\\Project\\allJar\\jBCrypt-0.4.1.jar",
+        "c:\\Users\\Karti\\OneDrive\\Desktop\\try\\Cpp_Java_Project\\Project\\allJar\\jcalendar-tz-1.3.3-4.jar",
+        "c:\\Users\\Karti\\OneDrive\\Desktop\\try\\Cpp_Java_Project\\Project\\allJar\\json-20140107.jar",
+        "c:\\Users\\Karti\\OneDrive\\Desktop\\try\\Cpp_Java_Project\\Project\\allJar\\mail-1.4.7.jar",
+        "c:\\Users\\Karti\\OneDrive\\Desktop\\try\\Cpp_Java_Project\\Project\\allJar\\mysql-connector-j-9.1.0.jar",
+        "c:\\Users\\Karti\\OneDrive\\Desktop\\try\\Cpp_Java_Project\\Project\\allJar\\ResultSet2xml.jar"
+    ]
+}
